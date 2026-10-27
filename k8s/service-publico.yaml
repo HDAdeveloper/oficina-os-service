@@ -1,0 +1,17 @@
+# Entrada pública do OS Service: o API Gateway e a Lambda de CPF chamam este endereço.
+# Billing e Execution NÃO têm balanceador público (só conversam por mensageria).
+apiVersion: v1
+kind: Service
+metadata:
+  name: os-service-publico
+  namespace: oficina
+  labels:
+    app: os-service
+spec:
+  type: LoadBalancer
+  selector:
+    app: os-service
+  ports:
+    - name: http
+      port: 80
+      targetPort: http

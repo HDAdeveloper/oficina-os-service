@@ -1,0 +1,59 @@
+spring:
+  application:
+    name: os-service
+  datasource:
+    # Padrões para o Postgres do docker-compose da raiz (docker compose up -d)
+    url: ${DB_URL:jdbc:postgresql://localhost:5433/oficina_os}
+    username: ${DB_USER:oficina}
+    password: ${DB_PASSWORD:oficina}
+  jpa:
+    open-in-view: false
+    hibernate:
+      # O esquema é criado só pelo Flyway; o Hibernate apenas confere se as entidades batem com ele
+      ddl-auto: validate
+    properties:
+      hibernate:
+        jdbc:
+          time_zone: UTC
+  flyway:
+    enabled: true
+
+server:
+  port: ${PORT:8080}
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info
+  endpoint:
+    health:
+      probes:
+        enabled: true
+
+oficina:
+  seguranca:
+    # VALORES DE DESENVOLVIMENTO. Em produção (Kubernetes) vêm de Secret/variáveis de ambiente.
+    jwt-secret: ${JWT_SECRET:dev-only-troque-este-segredo-com-32-bytes-ou-mais}
+    admin-usuario: ${ADMIN_USUARIO:admin}
+    admin-senha: ${ADMIN_SENHA:admin123}
+    expiracao-minutos: ${JWT_EXPIRACAO_MINUTOS:60}
+  saga:
+    # Sem resposta do Billing/Execution em 60 s o comando é reenviado (eles são idempotentes);
+    # depois de 3 reenvios o orquestrador compensa ou marca a Saga como pendente (docs/eventos.md).
+    prazo-resposta-segundos: ${SAGA_PRAZO_RESPOSTA_SEGUNDOS:60}
+    max-reenvios: ${SAGA_MAX_REENVIOS:3}
+  mensageria:
+    habilitada: ${MENSAGERIA_HABILITADA:true}
+    regiao: ${AWS_REGION:us-east-1}
+    # Só em desenvolvimento (LocalStack). Na AWS fica vazio e vale o endpoint oficial.
+    endpoint: ${AWS_ENDPOINT_URL:}
+    fila-eventos: ${OS_EVENTS_QUEUE:os-events}
+    topico-comandos-arn: ${COMMANDS_TOPIC_ARN:arn:aws:sns:us-east-1:000000000000:oficina-saga-commands}
+    intervalo-relay-ms: 1000
+    lote-relay: 50
+    intervalo-prazos-ms: 10000
+
+springdoc:
+  swagger-ui:
+    path: /swagger-ui.html

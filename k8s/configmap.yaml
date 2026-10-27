@@ -1,0 +1,20 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: os-service-config
+  namespace: oficina
+data:
+  # Os marcadores abaixo (RDS_OS_ENDPOINT, CONTA_AWS) são trocados pelo script de deploy com as saídas do Terraform
+  DB_URL: "jdbc:postgresql://RDS_OS_ENDPOINT:5432/oficina_os"
+  JWT_EXPIRACAO_MINUTOS: "60"
+  AWS_REGION: "us-east-1"
+  OS_EVENTS_QUEUE: "os-events"
+  COMMANDS_TOPIC_ARN: "arn:aws:sns:us-east-1:CONTA_AWS:oficina-saga-commands"
+  # Prazos da Saga (docs/eventos.md): reenvio após 60 s, até 3 vezes
+  SAGA_PRAZO_RESPOSTA_SEGUNDOS: "60"
+  SAGA_MAX_REENVIOS: "3"
+  # New Relic (a licenca fica no segredo opcional "newrelic", nunca no Git)
+  NEW_RELIC_APP_NAME: "oficina-os-service"
+  NEW_RELIC_LOG_FILE_NAME: "STDOUT"
+  NEW_RELIC_DISTRIBUTED_TRACING_ENABLED: "true"
+  NEW_RELIC_APPLICATION_LOGGING_FORWARDING_ENABLED: "true"
