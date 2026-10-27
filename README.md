@@ -53,7 +53,7 @@ Manifestos em `k8s/` (Deployment, Service, ConfigMap, ServiceAccount do IRSA). O
 SonarQube Cloud (com quality gate) -> imagem Docker -> deploy no EKS (so na `main`, com a variavel `DEPLOY_ENABLED=true`).
 A `main` e protegida: alteracoes entram por Pull Request e o CI precisa passar.
 
-Configure no repositorio (Settings -> Secrets and variables -> Actions):
+Configure no repositório (Settings -> Secrets and variables -> Actions):
 
 | Tipo | Nome | Valor |
 |---|---|---|
