@@ -19,6 +19,9 @@ public interface GestaoClientes {
 
     void desativar(String id);
 
+    /** Volta a ativar um cliente desativado (não faz nada se já estiver ativo). */
+    Cliente reativar(String id);
+
     /** O id é o CPF/CNPJ; aceita com ou sem máscara. */
     Cliente buscarPorId(String id);
 

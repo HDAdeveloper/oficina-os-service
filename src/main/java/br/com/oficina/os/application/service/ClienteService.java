@@ -21,8 +21,10 @@ public class ClienteService implements GestaoClientes {
     public Cliente cadastrar(NovoCliente dados) {
         Cliente novo = Cliente.novo(dados.nome(), dados.documento(), dados.email(),
                 dados.telefone(), dados.endereco());
-        if (clientes.buscarPorId(novo.id()).isPresent()) {
-            throw new ConflitoException("Já existe cliente com o documento " + novo.documento().formatado());
+        var existente = clientes.buscarPorId(novo.id());
+        if (existente.isPresent()) {
+            String dica = existente.get().ativo() ? "" : " (está inativo: use a reativação)";
+            throw new ConflitoException("Já existe cliente com o documento " + novo.documento().formatado() + dica);
         }
         return clientes.salvar(novo);
     }
@@ -36,6 +38,11 @@ public class ClienteService implements GestaoClientes {
     @Override
     public void desativar(String id) {
         clientes.salvar(buscarPorId(id).desativar());
+    }
+
+    @Override
+    public Cliente reativar(String id) {
+        return clientes.salvar(buscarPorId(id).reativar());
     }
 
     @Override

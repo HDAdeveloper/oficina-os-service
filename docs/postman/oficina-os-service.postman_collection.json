@@ -304,6 +304,36 @@
               }
             }
           ]
+        },
+        {
+          "name": "Reativar cliente (idempotente se já ativo)",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/clientes/{{clienteId}}/reativacao",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "clientes",
+                "{{clienteId}}",
+                "reativacao"
+              ]
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('status 200 e ativo', function(){ pm.response.to.have.status(200); pm.expect(pm.response.json().ativo).to.eql(true); });"
+                ]
+              }
+            }
+          ]
         }
       ]
     },

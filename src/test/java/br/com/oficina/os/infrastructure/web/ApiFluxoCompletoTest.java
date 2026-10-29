@@ -166,5 +166,14 @@ class ApiFluxoCompletoTest extends PostgresTestBase {
         chamar(delete("/api/servicos/" + servicoId), t, null).andExpect(status().isNoContent());
         chamar(delete("/api/veiculos/" + veiculoId), t, null).andExpect(status().isNoContent());
         chamar(delete("/api/clientes/" + clienteId), t, null).andExpect(status().isNoContent());
+        chamar(get("/api/clientes/" + clienteId), t, null).andExpect(status().isOk())
+                .andExpect(jsonPath("$.ativo").value(false));
+
+        // Cliente desativado volta com a reativação (e o cadastro do mesmo CPF orienta a usá-la)
+        chamar(post("/api/clientes"), t,
+                "{\"nome\":\"Fernanda Lima\",\"documento\":\"111.444.777-35\"}")
+                .andExpect(status().isConflict()).andExpect(content().string(containsString("reativa")));
+        chamar(post("/api/clientes/" + clienteId + "/reativacao"), t, null).andExpect(status().isOk())
+                .andExpect(jsonPath("$.ativo").value(true));
     }
 }

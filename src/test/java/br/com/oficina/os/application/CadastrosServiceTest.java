@@ -55,9 +55,9 @@ class CadastrosServiceTest {
     // ------------------------------------------------------------ clientes
 
     @Test
-    void cadastraClienteComIdGerado() {
+    void cadastraClienteComODocumentoComoId() {
         Cliente c = novoCliente();
-        assertThat(c.id()).isNotNull();
+        assertThat(c.id()).isEqualTo("52998224725");
         assertThat(clientes.buscarPorDocumento("52998224725").id()).isEqualTo(c.id());
         assertThat(clientes.buscarPorDocumento(CPF).id()).isEqualTo(c.id());
     }
@@ -77,6 +77,32 @@ class CadastrosServiceTest {
         clientes.desativar(c.id());
         assertThat(clientes.listar()).isEmpty();
         assertThat(clientes.buscarPorId(c.id()).ativo()).isFalse();
+    }
+
+    @Test
+    void reativaClienteDesativadoERecebeNovasOrdens() {
+        Cliente c = novoCliente();
+        clientes.desativar(c.id());
+
+        Cliente reativado = clientes.reativar(CPF);
+
+        assertThat(reativado.ativo()).isTrue();
+        assertThat(clientes.listar()).extracting(Cliente::id).containsExactly(c.id());
+        assertThat(clientes.reativar(c.id()).ativo()).isTrue(); // já ativo: não muda nada
+    }
+
+    @Test
+    void cadastrarDocumentoDeClienteInativoOrientaAReativacao() {
+        Cliente c = novoCliente();
+        clientes.desativar(c.id());
+
+        assertThatThrownBy(this::novoCliente).isInstanceOf(ConflitoException.class)
+                .hasMessageContaining("reativação");
+    }
+
+    @Test
+    void reativarClienteInexistenteGeraNaoEncontrado() {
+        assertThatThrownBy(() -> clientes.reativar("99")).isInstanceOf(RecursoNaoEncontradoException.class);
     }
 
     @Test

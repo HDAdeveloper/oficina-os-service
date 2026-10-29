@@ -116,4 +116,31 @@ class ClienteControllerTest {
         mvc.perform(delete("/api/clientes/52998224725").with(jwt().authorities(new SimpleGrantedAuthority("ROLE_ADMIN")))).andExpect(status().isNoContent());
         verify(clientes).desativar("52998224725");
     }
+
+    @Test
+    void reativaDevolve200ComOClienteAtivo() throws Exception {
+        when(clientes.reativar("52998224725")).thenReturn(ana());
+
+        mvc.perform(post("/api/clientes/52998224725/reativacao")
+                        .with(jwt().authorities(new SimpleGrantedAuthority("ROLE_ADMIN"))))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.id").value("52998224725"))
+                .andExpect(jsonPath("$.ativo").value(true));
+    }
+
+    @Test
+    void reativarClienteInexistenteDa404() throws Exception {
+        when(clientes.reativar("9")).thenThrow(new RecursoNaoEncontradoException("Cliente não encontrado: 9"));
+
+        mvc.perform(post("/api/clientes/9/reativacao")
+                        .with(jwt().authorities(new SimpleGrantedAuthority("ROLE_ADMIN"))))
+                .andExpect(status().isNotFound());
+    }
+
+    @Test
+    void reativarExigeAdmin() throws Exception {
+        mvc.perform(post("/api/clientes/52998224725/reativacao")
+                        .with(jwt().authorities(new SimpleGrantedAuthority("ROLE_CLIENTE"))))
+                .andExpect(status().isForbidden());
+    }
 }

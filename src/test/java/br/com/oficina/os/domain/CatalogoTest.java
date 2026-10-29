@@ -52,6 +52,8 @@ class CatalogoTest {
     void desativarEAtualizarCliente() {
         Cliente c = Cliente.novo("Ana", "52998224725", "ana@exemplo.com", null, null);
         assertThat(c.desativar().ativo()).isFalse();
+        assertThat(c.desativar().reativar().ativo()).isTrue();
+        assertThat(c.reativar()).isEqualTo(c);
         Cliente atualizado = c.atualizar("Ana Maria", "novo@exemplo.com", "11888888888", "Rua B");
         assertThat(atualizado.nome()).isEqualTo("Ana Maria");
         assertThat(atualizado.documento()).isEqualTo(c.documento());

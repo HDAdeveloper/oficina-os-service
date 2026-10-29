@@ -73,4 +73,10 @@ public class ClienteController {
         clientes.desativar(id);
         return ResponseEntity.noContent().build();
     }
+
+    @PostMapping("/{id}/reativacao")
+    @Operation(summary = "Reativa um cliente desativado (o id é o CPF/CNPJ)")
+    public ClienteResponse reativar(@PathVariable String id) {
+        return ClienteResponse.de(clientes.reativar(id));
+    }
 }

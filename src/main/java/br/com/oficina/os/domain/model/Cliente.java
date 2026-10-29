@@ -38,6 +38,10 @@ public record Cliente(Documento documento, String nome, String email,
         return new Cliente(documento, nome, email, telefone, endereco, false);
     }
 
+    public Cliente reativar() {
+        return new Cliente(documento, nome, email, telefone, endereco, true);
+    }
+
     public Cliente atualizar(String novoNome, String novoEmail, String novoTelefone, String novoEndereco) {
         return new Cliente(documento, novoNome, novoEmail, novoTelefone, novoEndereco, ativo);
     }
