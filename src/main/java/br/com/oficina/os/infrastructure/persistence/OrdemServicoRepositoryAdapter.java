@@ -42,7 +42,7 @@ public class OrdemServicoRepositoryAdapter implements OrdemServicoRepository {
     }
 
     @Override
-    public List<OrdemServico> buscarPorCliente(Long clienteId) {
+    public List<OrdemServico> buscarPorCliente(String clienteId) {
         return jpa.findByClienteIdOrderByDataAberturaDesc(clienteId).stream()
                 .map(PersistenciaMapper::paraDominio).toList();
     }

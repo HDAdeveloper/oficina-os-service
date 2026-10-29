@@ -41,7 +41,7 @@ class ClienteControllerTest {
     @MockitoBean GestaoClientes clientes;
 
     private static Cliente ana() {
-        return new Cliente(1L, "Ana Souza", Documento.of("52998224725"), "ana@x.com", "1199", "Rua A", true);
+        return new Cliente(Documento.of("52998224725"), "Ana Souza", "ana@x.com", "1199", "Rua A", true);
     }
 
     @Test
@@ -56,8 +56,8 @@ class ClienteControllerTest {
         mvc.perform(post("/api/clientes").with(jwt().authorities(new SimpleGrantedAuthority("ROLE_ADMIN"))).contentType(APPLICATION_JSON)
                         .content("{\"nome\":\"Ana Souza\",\"documento\":\"529.982.247-25\",\"email\":\"ana@x.com\"}"))
                 .andExpect(status().isCreated())
-                .andExpect(header().string("Location", endsWith("/api/clientes/1")))
-                .andExpect(jsonPath("$.id").value(1))
+                .andExpect(header().string("Location", endsWith("/api/clientes/52998224725")))
+                .andExpect(jsonPath("$.id").value("52998224725"))
                 .andExpect(jsonPath("$.documento").value("529.982.247-25"))
                 .andExpect(jsonPath("$.tipoDocumento").value("CPF"));
     }
@@ -91,16 +91,16 @@ class ClienteControllerTest {
     @Test
     void listaEBusca() throws Exception {
         when(clientes.listar()).thenReturn(List.of(ana()));
-        when(clientes.buscarPorId(1L)).thenReturn(ana());
+        when(clientes.buscarPorId("52998224725")).thenReturn(ana());
         when(clientes.buscarPorDocumento("529.982.247-25")).thenReturn(ana());
-        when(clientes.buscarPorId(9L)).thenThrow(new RecursoNaoEncontradoException("Cliente não encontrado: 9"));
+        when(clientes.buscarPorId("9")).thenThrow(new RecursoNaoEncontradoException("Cliente não encontrado: 9"));
 
         mvc.perform(get("/api/clientes").with(jwt().authorities(new SimpleGrantedAuthority("ROLE_ADMIN"))))
                 .andExpect(status().isOk()).andExpect(jsonPath("$[0].nome").value("Ana Souza"));
-        mvc.perform(get("/api/clientes/1").with(jwt().authorities(new SimpleGrantedAuthority("ROLE_ADMIN"))))
+        mvc.perform(get("/api/clientes/52998224725").with(jwt().authorities(new SimpleGrantedAuthority("ROLE_ADMIN"))))
                 .andExpect(status().isOk()).andExpect(jsonPath("$.email").value("ana@x.com"));
         mvc.perform(get("/api/clientes/documento/529.982.247-25").with(jwt().authorities(new SimpleGrantedAuthority("ROLE_ADMIN"))))
-                .andExpect(status().isOk()).andExpect(jsonPath("$.id").value(1));
+                .andExpect(status().isOk()).andExpect(jsonPath("$.id").value("52998224725"));
         mvc.perform(get("/api/clientes/9").with(jwt().authorities(new SimpleGrantedAuthority("ROLE_ADMIN"))))
                 .andExpect(status().isNotFound())
                 .andExpect(jsonPath("$.status").value(404));
@@ -110,10 +110,10 @@ class ClienteControllerTest {
     void atualizaEDesativa() throws Exception {
         when(clientes.atualizar(any(), any())).thenReturn(ana());
 
-        mvc.perform(put("/api/clientes/1").with(jwt().authorities(new SimpleGrantedAuthority("ROLE_ADMIN"))).contentType(APPLICATION_JSON)
+        mvc.perform(put("/api/clientes/52998224725").with(jwt().authorities(new SimpleGrantedAuthority("ROLE_ADMIN"))).contentType(APPLICATION_JSON)
                         .content("{\"nome\":\"Ana Souza\",\"email\":\"ana@x.com\"}"))
                 .andExpect(status().isOk());
-        mvc.perform(delete("/api/clientes/1").with(jwt().authorities(new SimpleGrantedAuthority("ROLE_ADMIN")))).andExpect(status().isNoContent());
-        verify(clientes).desativar(1L);
+        mvc.perform(delete("/api/clientes/52998224725").with(jwt().authorities(new SimpleGrantedAuthority("ROLE_ADMIN")))).andExpect(status().isNoContent());
+        verify(clientes).desativar("52998224725");
     }
 }

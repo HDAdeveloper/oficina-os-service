@@ -20,7 +20,7 @@ public class OrdemServico {
 
     private Long id;
     private final String numero;
-    private final Long clienteId;
+    private final String clienteId;
     private final Long veiculoId;
     private StatusOS status;
     private final String descricaoProblema;
@@ -37,7 +37,7 @@ public class OrdemServico {
     private Instant dataFinalizacao;
     private Instant dataEntrega;
 
-    private OrdemServico(Long id, String numero, Long clienteId, Long veiculoId, StatusOS status,
+    private OrdemServico(Long id, String numero, String clienteId, Long veiculoId, StatusOS status,
                          String descricaoProblema, String observacoes, Instant dataAbertura) {
         this.id = id;
         this.numero = numero;
@@ -50,12 +50,12 @@ public class OrdemServico {
     }
 
     /** Abre uma OS nova no status RECEBIDA. */
-    public static OrdemServico abrir(String numero, Long clienteId, Long veiculoId,
+    public static OrdemServico abrir(String numero, String clienteId, Long veiculoId,
                                      String descricaoProblema, String observacoes, Instant agora) {
         if (numero == null || numero.isBlank()) {
             throw new RegraDeNegocioException("Número da OS é obrigatório");
         }
-        if (clienteId == null || veiculoId == null) {
+        if (clienteId == null || clienteId.isBlank() || veiculoId == null) {
             throw new RegraDeNegocioException("Cliente e veículo são obrigatórios");
         }
         if (descricaoProblema == null || descricaoProblema.isBlank()) {
@@ -68,7 +68,7 @@ public class OrdemServico {
     }
 
     /** Dados completos de uma OS já existente, usados pela persistência para reconstruir o agregado. */
-    public record Dados(Long id, String numero, Long clienteId, Long veiculoId, StatusOS status,
+    public record Dados(Long id, String numero, String clienteId, Long veiculoId, StatusOS status,
                         String descricaoProblema, String observacoes, String orcamentoId,
                         String motivoCancelamento, List<ItemServicoOS> itensServico,
                         List<ItemPecaOS> itensPeca, List<HistoricoStatus> historico,
@@ -206,7 +206,7 @@ public class OrdemServico {
     public Long getId() { return id; }
     public void atribuirId(Long novoId) { this.id = novoId; }
     public String getNumero() { return numero; }
-    public Long getClienteId() { return clienteId; }
+    public String getClienteId() { return clienteId; }
     public Long getVeiculoId() { return veiculoId; }
     public StatusOS getStatus() { return status; }
     public String getDescricaoProblema() { return descricaoProblema; }

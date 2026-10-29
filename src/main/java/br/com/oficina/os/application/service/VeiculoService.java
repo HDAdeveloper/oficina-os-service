@@ -7,6 +7,7 @@ import br.com.oficina.os.domain.exception.ConflitoException;
 import br.com.oficina.os.domain.exception.RecursoNaoEncontradoException;
 import br.com.oficina.os.domain.exception.RegraDeNegocioException;
 import br.com.oficina.os.domain.model.Cliente;
+import br.com.oficina.os.domain.model.Documento;
 import br.com.oficina.os.domain.model.Placa;
 import br.com.oficina.os.domain.model.Veiculo;
 
@@ -24,10 +25,10 @@ public class VeiculoService implements GestaoVeiculos {
 
     @Override
     public Veiculo cadastrar(NovoVeiculo dados) {
-        if (dados.clienteId() == null) {
+        if (dados.clienteId() == null || dados.clienteId().isBlank()) {
             throw new RegraDeNegocioException("Veículo precisa pertencer a um cliente");
         }
-        Cliente dono = clientes.buscarPorId(dados.clienteId())
+        Cliente dono = clientes.buscarPorId(Documento.normalizar(dados.clienteId()))
                 .orElseThrow(() -> new RecursoNaoEncontradoException(
                         "Cliente não encontrado: " + dados.clienteId()));
         if (!dono.ativo()) {
@@ -63,8 +64,8 @@ public class VeiculoService implements GestaoVeiculos {
     }
 
     @Override
-    public List<Veiculo> listarPorCliente(Long clienteId) {
-        return veiculos.listarPorCliente(clienteId);
+    public List<Veiculo> listarPorCliente(String clienteId) {
+        return veiculos.listarPorCliente(Documento.normalizar(clienteId));
     }
 
     @Override

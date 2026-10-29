@@ -44,12 +44,12 @@ class SegurancaPorPapelTest {
     }
 
     private static Cliente ana() {
-        return new Cliente(1L, "Ana Souza", Documento.of(CPF), "ana@x.com", "1199", "Rua A", true);
+        return new Cliente(Documento.of(CPF), "Ana Souza", "ana@x.com", "1199", "Rua A", true);
     }
 
     @Test
     void clienteConsultaAsPropriasOrdensPeloSubjectDoToken() throws Exception {
-        OrdemServico os = OrdemServico.abrir("OS-2026-AAAA0001", 1L, 2L, "Barulho", null,
+        OrdemServico os = OrdemServico.abrir("OS-2026-AAAA0001", "52998224725", 2L, "Barulho", null,
                 Instant.parse("2026-10-22T12:00:00Z"));
         os.atribuirId(10L);
         when(ordens.listarDoCliente(CPF)).thenReturn(List.of(os));

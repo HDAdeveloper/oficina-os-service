@@ -26,29 +26,24 @@ final class Fakes {
         }
     }
 
-    static class ClientesMem extends Mem<Cliente> implements ClienteRepository {
+    /** A chave do cliente é o documento (CPF/CNPJ), então não há id gerado como nos outros fakes. */
+    static class ClientesMem implements ClienteRepository {
+        private final Map<String, Cliente> dados = new LinkedHashMap<>();
+
         @Override
         public Cliente salvar(Cliente c) {
-            Cliente s = c.id() == null
-                    ? new Cliente(proximoId(), c.nome(), c.documento(), c.email(), c.telefone(), c.endereco(), c.ativo())
-                    : c;
-            dados.put(s.id(), s);
-            return s;
+            dados.put(c.id(), c);
+            return c;
         }
 
         @Override
-        public Optional<Cliente> buscarPorId(Long id) {
+        public Optional<Cliente> buscarPorId(String id) {
             return Optional.ofNullable(dados.get(id));
         }
 
         @Override
-        public Optional<Cliente> buscarPorDocumento(String doc) {
-            return dados.values().stream().filter(c -> c.documento().numero().equals(doc)).findFirst();
-        }
-
-        @Override
         public List<Cliente> listarAtivos() {
-            return filtrar(Cliente::ativo);
+            return dados.values().stream().filter(Cliente::ativo).toList();
         }
     }
 
@@ -73,7 +68,7 @@ final class Fakes {
         }
 
         @Override
-        public List<Veiculo> listarPorCliente(Long clienteId) {
+        public List<Veiculo> listarPorCliente(String clienteId) {
             return filtrar(v -> v.clienteId().equals(clienteId));
         }
 
@@ -151,7 +146,7 @@ final class Fakes {
         }
 
         @Override
-        public List<OrdemServico> buscarPorCliente(Long clienteId) {
+        public List<OrdemServico> buscarPorCliente(String clienteId) {
             return filtrar(o -> clienteId.equals(o.getClienteId())).stream()
                     .sorted(java.util.Comparator.comparing(OrdemServico::getDataAbertura).reversed()).toList();
         }

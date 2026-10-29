@@ -20,7 +20,7 @@ final class PersistenciaMapper {
     // ------------------------------------------------------------ cliente
 
     static Cliente paraDominio(ClienteEntity e) {
-        return new Cliente(e.id, e.nome, Documento.of(e.documento), e.email, e.telefone, e.endereco, e.ativo);
+        return new Cliente(Documento.of(e.documento), e.nome, e.email, e.telefone, e.endereco, e.ativo);
     }
 
     static void aplicar(ClienteEntity e, Cliente c) {

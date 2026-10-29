@@ -5,7 +5,7 @@ import br.com.oficina.os.domain.exception.RegraDeNegocioException;
 import java.time.Year;
 
 public record Veiculo(Long id, Placa placa, String marca, String modelo, int ano,
-                      Long clienteId, boolean ativo) {
+                      String clienteId, boolean ativo) {
 
     public Veiculo {
         if (placa == null) {
@@ -18,12 +18,12 @@ public record Veiculo(Long id, Placa placa, String marca, String modelo, int ano
         if (ano < 1900 || ano > anoMaximo) {
             throw new RegraDeNegocioException("Ano do veículo deve estar entre 1900 e " + anoMaximo);
         }
-        if (clienteId == null) {
+        if (clienteId == null || clienteId.isBlank()) {
             throw new RegraDeNegocioException("Veículo precisa pertencer a um cliente");
         }
     }
 
-    public static Veiculo novo(String placa, String marca, String modelo, int ano, Long clienteId) {
+    public static Veiculo novo(String placa, String marca, String modelo, int ano, String clienteId) {
         return new Veiculo(null, Placa.of(placa), marca, modelo, ano, clienteId, true);
     }
 

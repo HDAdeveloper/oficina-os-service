@@ -18,5 +18,5 @@ public interface OrdemServicoRepository {
     List<OrdemServico> buscarPorStatus(Collection<StatusOS> status);
 
     /** OS do cliente, a mais recente primeiro. */
-    List<OrdemServico> buscarPorCliente(Long clienteId);
+    List<OrdemServico> buscarPorCliente(String clienteId);
 }

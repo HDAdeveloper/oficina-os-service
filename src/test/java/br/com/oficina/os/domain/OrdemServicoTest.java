@@ -29,7 +29,7 @@ class OrdemServicoTest {
 
     @BeforeEach
     void abreOS() {
-        os = OrdemServico.abrir("OS-2026-1", 1L, 1L, "Barulho no motor", null, T0);
+        os = OrdemServico.abrir("OS-2026-1", "52998224725", 1L, "Barulho no motor", null, T0);
     }
 
     private OrdemServico osEmExecucao() {
@@ -53,11 +53,11 @@ class OrdemServicoTest {
 
     @Test
     void aberturaValidaCampos() {
-        assertThatThrownBy(() -> OrdemServico.abrir(" ", 1L, 1L, "x", null, T0))
+        assertThatThrownBy(() -> OrdemServico.abrir(" ", "52998224725", 1L, "x", null, T0))
                 .isInstanceOf(RegraDeNegocioException.class).hasMessageContaining("Número");
         assertThatThrownBy(() -> OrdemServico.abrir("OS-1", null, 1L, "x", null, T0))
                 .isInstanceOf(RegraDeNegocioException.class).hasMessageContaining("Cliente");
-        assertThatThrownBy(() -> OrdemServico.abrir("OS-1", 1L, 1L, " ", null, T0))
+        assertThatThrownBy(() -> OrdemServico.abrir("OS-1", "52998224725", 1L, " ", null, T0))
                 .isInstanceOf(RegraDeNegocioException.class).hasMessageContaining("Descrição");
     }
 
@@ -255,7 +255,7 @@ class OrdemServicoTest {
     @Test
     void reconstituiAPartirDosDadosPersistidos() {
         OrdemServico recarregada = OrdemServico.reconstituir(new OrdemServico.Dados(
-                7L, "OS-2026-7", 1L, 2L, StatusOS.EM_EXECUCAO, "Freio", "obs", "ORC-7", null,
+                7L, "OS-2026-7", "52998224725", 2L, StatusOS.EM_EXECUCAO, "Freio", "obs", "ORC-7", null,
                 List.of(new ItemServicoOS(1L, "Alinhamento", 1, new BigDecimal("10.00"))),
                 List.of(), List.of(new HistoricoStatus(null, StatusOS.RECEBIDA, T0, "OS aberta")),
                 T0, T0.plusSeconds(10), null, null));

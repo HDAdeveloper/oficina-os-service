@@ -46,7 +46,7 @@ class OrdemServicoControllerTest {
     @MockitoBean GestaoOrdensServico ordens;
 
     private static OrdemServico os() {
-        OrdemServico os = OrdemServico.abrir("OS-2026-AAAA0001", 1L, 2L, "Barulho no motor", null, T0);
+        OrdemServico os = OrdemServico.abrir("OS-2026-AAAA0001", "52998224725", 2L, "Barulho no motor", null, T0);
         os.atribuirId(10L);
         return os;
     }

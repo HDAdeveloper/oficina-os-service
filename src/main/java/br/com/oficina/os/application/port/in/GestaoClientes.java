@@ -15,11 +15,12 @@ public interface GestaoClientes {
 
     Cliente cadastrar(NovoCliente dados);
 
-    Cliente atualizar(Long id, AlteracaoCliente dados);
+    Cliente atualizar(String id, AlteracaoCliente dados);
 
-    void desativar(Long id);
+    void desativar(String id);
 
-    Cliente buscarPorId(Long id);
+    /** O id é o CPF/CNPJ; aceita com ou sem máscara. */
+    Cliente buscarPorId(String id);
 
     /** Aceita o documento com ou sem máscara. */
     Cliente buscarPorDocumento(String documento);

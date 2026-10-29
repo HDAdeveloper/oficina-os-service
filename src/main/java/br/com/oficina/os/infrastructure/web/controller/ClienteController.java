@@ -49,8 +49,8 @@ public class ClienteController {
     }
 
     @GetMapping("/{id}")
-    @Operation(summary = "Busca um cliente pelo id")
-    public ClienteResponse buscar(@PathVariable Long id) {
+    @Operation(summary = "Busca um cliente pelo id (que é o CPF/CNPJ, com ou sem pontuação)")
+    public ClienteResponse buscar(@PathVariable String id) {
         return ClienteResponse.de(clientes.buscarPorId(id));
     }
 
@@ -62,14 +62,14 @@ public class ClienteController {
 
     @PutMapping("/{id}")
     @Operation(summary = "Atualiza os dados de contato do cliente (o documento não muda)")
-    public ClienteResponse atualizar(@PathVariable Long id, @Valid @RequestBody ClienteAtualizacaoRequest req) {
+    public ClienteResponse atualizar(@PathVariable String id, @Valid @RequestBody ClienteAtualizacaoRequest req) {
         return ClienteResponse.de(clientes.atualizar(id,
                 new AlteracaoCliente(req.nome(), req.email(), req.telefone(), req.endereco())));
     }
 
     @DeleteMapping("/{id}")
     @Operation(summary = "Desativa o cliente (o histórico é preservado)")
-    public ResponseEntity<Void> desativar(@PathVariable Long id) {
+    public ResponseEntity<Void> desativar(@PathVariable String id) {
         clientes.desativar(id);
         return ResponseEntity.noContent().build();
     }

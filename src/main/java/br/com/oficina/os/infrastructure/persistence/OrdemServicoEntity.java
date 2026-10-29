@@ -39,7 +39,7 @@ public class OrdemServicoEntity {
     String numero;
 
     @Column(name = "cliente_id", nullable = false)
-    Long clienteId;
+    String clienteId;
 
     @Column(name = "veiculo_id", nullable = false)
     Long veiculoId;

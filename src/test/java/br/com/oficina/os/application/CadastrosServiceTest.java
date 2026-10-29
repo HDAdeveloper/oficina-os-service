@@ -81,7 +81,7 @@ class CadastrosServiceTest {
 
     @Test
     void clienteInexistenteGeraNaoEncontrado() {
-        assertThatThrownBy(() -> clientes.buscarPorId(99L)).isInstanceOf(RecursoNaoEncontradoException.class);
+        assertThatThrownBy(() -> clientes.buscarPorId("99")).isInstanceOf(RecursoNaoEncontradoException.class);
         assertThatThrownBy(() -> clientes.buscarPorDocumento("52998224725"))
                 .isInstanceOf(RecursoNaoEncontradoException.class);
     }
@@ -102,7 +102,7 @@ class CadastrosServiceTest {
     void rejeitaVeiculoSemClienteOuComClienteInexistenteOuInativo() {
         assertThatThrownBy(() -> veiculos.cadastrar(new NovoVeiculo("ABC1D23", "VW", "Gol", 2020, null)))
                 .isInstanceOf(RegraDeNegocioException.class);
-        assertThatThrownBy(() -> veiculos.cadastrar(new NovoVeiculo("ABC1D23", "VW", "Gol", 2020, 42L)))
+        assertThatThrownBy(() -> veiculos.cadastrar(new NovoVeiculo("ABC1D23", "VW", "Gol", 2020, "42")))
                 .isInstanceOf(RecursoNaoEncontradoException.class);
 
         Cliente c = novoCliente();

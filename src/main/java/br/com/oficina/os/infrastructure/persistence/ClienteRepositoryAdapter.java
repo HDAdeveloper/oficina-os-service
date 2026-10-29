@@ -18,21 +18,14 @@ public class ClienteRepositoryAdapter implements ClienteRepository {
 
     @Override
     public Cliente salvar(Cliente cliente) {
-        ClienteEntity e = cliente.id() == null
-                ? new ClienteEntity()
-                : jpa.findById(cliente.id()).orElseGet(ClienteEntity::new);
+        ClienteEntity e = jpa.findById(cliente.id()).orElseGet(ClienteEntity::new);
         PersistenciaMapper.aplicar(e, cliente);
         return PersistenciaMapper.paraDominio(jpa.saveAndFlush(e));
     }
 
     @Override
-    public Optional<Cliente> buscarPorId(Long id) {
+    public Optional<Cliente> buscarPorId(String id) {
         return jpa.findById(id).map(PersistenciaMapper::paraDominio);
-    }
-
-    @Override
-    public Optional<Cliente> buscarPorDocumento(String documento) {
-        return jpa.findByDocumento(documento).map(PersistenciaMapper::paraDominio);
     }
 
     @Override

@@ -45,8 +45,8 @@ public class VeiculoController {
 
     @GetMapping
     @Operation(summary = "Lista os veículos ativos, ou os de um cliente se clienteId for informado")
-    public List<VeiculoResponse> listar(@RequestParam(required = false) Long clienteId) {
-        var lista = clienteId == null ? veiculos.listar() : veiculos.listarPorCliente(clienteId);
+    public List<VeiculoResponse> listar(@RequestParam(required = false) String clienteId) {
+        var lista = clienteId == null || clienteId.isBlank() ? veiculos.listar() : veiculos.listarPorCliente(clienteId);
         return lista.stream().map(VeiculoResponse::de).toList();
     }
 

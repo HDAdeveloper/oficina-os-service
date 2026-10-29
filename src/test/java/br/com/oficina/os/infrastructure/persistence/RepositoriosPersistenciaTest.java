@@ -60,13 +60,13 @@ class RepositoriosPersistenciaTest extends PostgresTestBase {
         assertThat(cliente.id()).isNotNull();
         limparCache();
 
-        Cliente lido = clientes.buscarPorDocumento("52998224725").orElseThrow();
+        Cliente lido = clientes.buscarPorId("52998224725").orElseThrow();
         assertThat(lido.id()).isEqualTo(cliente.id());
         assertThat(lido.nome()).isEqualTo("Ana Souza");
         assertThat(lido.documento().formatado()).isEqualTo("529.982.247-25");
         assertThat(lido.ativo()).isTrue();
         assertThat(clientes.buscarPorId(cliente.id())).isPresent();
-        assertThat(clientes.buscarPorId(-1L)).isEmpty();
+        assertThat(clientes.buscarPorId("00000000000")).isEmpty();
     }
 
     @Test
@@ -82,9 +82,11 @@ class RepositoriosPersistenciaTest extends PostgresTestBase {
     }
 
     @Test
-    void bancoImpedeDocumentoDuplicado() {
-        assertThatThrownBy(() -> clientes.salvar(Cliente.novo("Outra Ana", "52998224725", null, null, null)))
-                .isInstanceOf(DataIntegrityViolationException.class);
+    void documentoEhAChaveEntaoSalvarOMesmoDocumentoAtualiza() {
+        clientes.salvar(Cliente.novo("Ana Atualizada", "52998224725", null, null, null));
+
+        assertThat(clientes.buscarPorId("52998224725").orElseThrow().nome()).isEqualTo("Ana Atualizada");
+        assertThat(clientes.listarAtivos()).extracting(Cliente::id).containsOnlyOnce("52998224725");
     }
 
     // ------------------------------------------------------------ veículo
@@ -106,7 +108,7 @@ class RepositoriosPersistenciaTest extends PostgresTestBase {
 
     @Test
     void bancoImpedeVeiculoDeClienteInexistente() {
-        assertThatThrownBy(() -> veiculos.salvar(Veiculo.novo("XYZ9A99", "VW", "Gol", 2020, 999_999L)))
+        assertThatThrownBy(() -> veiculos.salvar(Veiculo.novo("XYZ9A99", "VW", "Gol", 2020, "00000000000")))
                 .isInstanceOf(DataIntegrityViolationException.class);
     }
 

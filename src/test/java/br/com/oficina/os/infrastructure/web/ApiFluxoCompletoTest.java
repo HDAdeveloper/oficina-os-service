@@ -48,6 +48,13 @@ class ApiFluxoCompletoTest extends PostgresTestBase {
         return mvc.perform(req);
     }
 
+    /** Cliente: o id é o CPF/CNPJ (texto), não um número gerado. */
+    private String criarComIdTexto(String url, String token, String json) throws Exception {
+        String corpo = chamar(post(url), token, json).andExpect(status().isCreated())
+                .andReturn().getResponse().getContentAsString();
+        return JsonPath.read(corpo, "$.id");
+    }
+
     private long criar(String url, String token, String json) throws Exception {
         String corpo = chamar(post(url), token, json).andExpect(status().isCreated())
                 .andReturn().getResponse().getContentAsString();
@@ -74,10 +81,11 @@ class ApiFluxoCompletoTest extends PostgresTestBase {
         String t = token();
 
         // Cadastros
-        long clienteId = criar("/api/clientes", t,
+        String clienteId = criarComIdTexto("/api/clientes", t,
                 "{\"nome\":\"Fernanda Lima\",\"documento\":\"111.444.777-35\",\"email\":\"fe@x.com\"}");
+        assertThat(clienteId).isEqualTo("11144477735");
         long veiculoId = criar("/api/veiculos", t, "{\"placa\":\"API1A23\",\"marca\":\"Honda\","
-                + "\"modelo\":\"Civic\",\"ano\":2020,\"clienteId\":" + clienteId + "}");
+                + "\"modelo\":\"Civic\",\"ano\":2020,\"clienteId\":\"" + clienteId + "\"}");
         long servicoId = criar("/api/servicos", t,
                 "{\"nome\":\"Alinhamento API\",\"preco\":90.00,\"tempoEstimadoMinutos\":45}");
         long pecaId = criar("/api/pecas", t,

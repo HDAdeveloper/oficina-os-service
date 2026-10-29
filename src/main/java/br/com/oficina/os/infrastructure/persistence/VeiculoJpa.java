@@ -8,7 +8,7 @@ import java.util.Optional;
 public interface VeiculoJpa extends JpaRepository<VeiculoEntity, Long> {
     Optional<VeiculoEntity> findByPlaca(String placa);
 
-    List<VeiculoEntity> findByClienteIdOrderByPlaca(Long clienteId);
+    List<VeiculoEntity> findByClienteIdOrderByPlaca(String clienteId);
 
     List<VeiculoEntity> findByAtivoTrueOrderByPlaca();
 }

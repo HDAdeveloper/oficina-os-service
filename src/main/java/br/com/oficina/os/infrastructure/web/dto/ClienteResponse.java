@@ -2,7 +2,7 @@ package br.com.oficina.os.infrastructure.web.dto;
 
 import br.com.oficina.os.domain.model.Cliente;
 
-public record ClienteResponse(Long id, String nome, String documento, String tipoDocumento, String email,
+public record ClienteResponse(String id, String nome, String documento, String tipoDocumento, String email,
                               String telefone, String endereco, boolean ativo) {
 
     public static ClienteResponse de(Cliente c) {

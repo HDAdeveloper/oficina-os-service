@@ -9,5 +9,5 @@ import java.util.List;
 public interface OrdemServicoJpa extends JpaRepository<OrdemServicoEntity, Long> {
     List<OrdemServicoEntity> findByStatusIn(Collection<StatusOS> status);
 
-    List<OrdemServicoEntity> findByClienteIdOrderByDataAberturaDesc(Long clienteId);
+    List<OrdemServicoEntity> findByClienteIdOrderByDataAberturaDesc(String clienteId);
 }

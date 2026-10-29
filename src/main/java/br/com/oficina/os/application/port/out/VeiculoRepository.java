@@ -15,7 +15,7 @@ public interface VeiculoRepository {
     /** Placa normalizada (maiúsculas, sem hífen). */
     Optional<Veiculo> buscarPorPlaca(String placa);
 
-    List<Veiculo> listarPorCliente(Long clienteId);
+    List<Veiculo> listarPorCliente(String clienteId);
 
     List<Veiculo> listarAtivos();
 }

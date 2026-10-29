@@ -21,32 +21,32 @@ public class ClienteService implements GestaoClientes {
     public Cliente cadastrar(NovoCliente dados) {
         Cliente novo = Cliente.novo(dados.nome(), dados.documento(), dados.email(),
                 dados.telefone(), dados.endereco());
-        if (clientes.buscarPorDocumento(novo.documento().numero()).isPresent()) {
+        if (clientes.buscarPorId(novo.id()).isPresent()) {
             throw new ConflitoException("Já existe cliente com o documento " + novo.documento().formatado());
         }
         return clientes.salvar(novo);
     }
 
     @Override
-    public Cliente atualizar(Long id, AlteracaoCliente dados) {
+    public Cliente atualizar(String id, AlteracaoCliente dados) {
         Cliente atual = buscarPorId(id);
         return clientes.salvar(atual.atualizar(dados.nome(), dados.email(), dados.telefone(), dados.endereco()));
     }
 
     @Override
-    public void desativar(Long id) {
+    public void desativar(String id) {
         clientes.salvar(buscarPorId(id).desativar());
     }
 
     @Override
-    public Cliente buscarPorId(Long id) {
-        return clientes.buscarPorId(id)
+    public Cliente buscarPorId(String id) {
+        return clientes.buscarPorId(Documento.normalizar(id))
                 .orElseThrow(() -> new RecursoNaoEncontradoException("Cliente não encontrado: " + id));
     }
 
     @Override
     public Cliente buscarPorDocumento(String documento) {
-        return clientes.buscarPorDocumento(Documento.normalizar(documento))
+        return clientes.buscarPorId(Documento.normalizar(documento))
                 .orElseThrow(() -> new RecursoNaoEncontradoException(
                         "Cliente não encontrado com o documento: " + documento));
     }

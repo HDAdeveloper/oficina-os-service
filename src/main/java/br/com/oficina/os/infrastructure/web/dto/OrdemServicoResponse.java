@@ -8,7 +8,7 @@ import java.util.List;
 
 public record OrdemServicoResponse(
         Long id, String numero, String status, String statusDescricao,
-        Long clienteId, Long veiculoId, String descricaoProblema, String observacoes,
+        String clienteId, Long veiculoId, String descricaoProblema, String observacoes,
         String orcamentoId, String motivoCancelamento,
         List<ItemServico> servicos, List<ItemPeca> pecas, BigDecimal valorTotal,
         Instant dataAbertura, Instant dataInicio, Instant dataFinalizacao, Instant dataEntrega) {

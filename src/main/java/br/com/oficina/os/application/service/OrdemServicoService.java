@@ -55,7 +55,7 @@ public class OrdemServicoService implements GestaoOrdensServico {
 
     @Override
     public OrdemServico abrir(AberturaOS dados) {
-        Cliente cliente = clientes.buscarPorDocumento(Documento.normalizar(dados.documentoCliente()))
+        Cliente cliente = clientes.buscarPorId(Documento.normalizar(dados.documentoCliente()))
                 .orElseThrow(() -> new RecursoNaoEncontradoException(
                         "Cliente não encontrado com o documento: " + dados.documentoCliente()));
         if (!cliente.ativo()) {
@@ -124,7 +124,7 @@ public class OrdemServicoService implements GestaoOrdensServico {
 
     @Override
     public List<OrdemServico> listarDoCliente(String documento) {
-        Cliente cliente = clientes.buscarPorDocumento(Documento.normalizar(documento))
+        Cliente cliente = clientes.buscarPorId(Documento.normalizar(documento))
                 .orElseThrow(() -> new RecursoNaoEncontradoException(
                         "Cliente não encontrado com o documento: " + documento));
         return ordens.buscarPorCliente(cliente.id());

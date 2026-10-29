@@ -36,7 +36,7 @@ public class VeiculoRepositoryAdapter implements VeiculoRepository {
     }
 
     @Override
-    public List<Veiculo> listarPorCliente(Long clienteId) {
+    public List<Veiculo> listarPorCliente(String clienteId) {
         return jpa.findByClienteIdOrderByPlaca(clienteId).stream().map(PersistenciaMapper::paraDominio).toList();
     }
 

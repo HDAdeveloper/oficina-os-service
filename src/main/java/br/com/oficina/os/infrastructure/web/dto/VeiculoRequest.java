@@ -1,7 +1,6 @@
 package br.com.oficina.os.infrastructure.web.dto;
 
 import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Positive;
 import jakarta.validation.constraints.Size;
 
@@ -10,5 +9,5 @@ public record VeiculoRequest(
         @NotBlank @Size(max = 80) String marca,
         @NotBlank @Size(max = 80) String modelo,
         @Positive int ano,
-        @NotNull Long clienteId) {
+        @NotBlank @Size(max = 18) String clienteId) {
 }

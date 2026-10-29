@@ -22,7 +22,7 @@ class CatalogoTest {
         Cliente c = Cliente.novo("Ana Souza", "529.982.247-25", "ana@exemplo.com", "11999999999", "Rua A, 1");
         assertThat(c.ativo()).isTrue();
         assertThat(c.documento().numero()).isEqualTo("52998224725");
-        assertThat(c.id()).isNull();
+        assertThat(c.id()).isEqualTo("52998224725");
     }
 
     @Test
@@ -44,7 +44,7 @@ class CatalogoTest {
 
     @Test
     void clienteExigeDocumento() {
-        assertThatThrownBy(() -> new Cliente(null, "Ana", null, null, null, null, true))
+        assertThatThrownBy(() -> new Cliente(null, "Ana", null, null, null, true))
                 .isInstanceOf(RegraDeNegocioException.class).hasMessageContaining("Documento");
     }
 
@@ -62,28 +62,28 @@ class CatalogoTest {
 
     @Test
     void criaVeiculoComPlacaNormalizada() {
-        Veiculo v = Veiculo.novo("abc-1d23", "Chevrolet", "Onix", 2022, 1L);
+        Veiculo v = Veiculo.novo("abc-1d23", "Chevrolet", "Onix", 2022, "52998224725");
         assertThat(v.placa().valor()).isEqualTo("ABC1D23");
         assertThat(v.ativo()).isTrue();
     }
 
     @Test
     void veiculoValidaCampos() {
-        assertThatThrownBy(() -> Veiculo.novo("ABC1D23", " ", "Onix", 2022, 1L))
+        assertThatThrownBy(() -> Veiculo.novo("ABC1D23", " ", "Onix", 2022, "52998224725"))
                 .isInstanceOf(RegraDeNegocioException.class);
-        assertThatThrownBy(() -> Veiculo.novo("ABC1D23", "Chevrolet", "Onix", 1800, 1L))
+        assertThatThrownBy(() -> Veiculo.novo("ABC1D23", "Chevrolet", "Onix", 1800, "52998224725"))
                 .isInstanceOf(RegraDeNegocioException.class).hasMessageContaining("Ano");
-        assertThatThrownBy(() -> Veiculo.novo("ABC1D23", "Chevrolet", "Onix", 2300, 1L))
+        assertThatThrownBy(() -> Veiculo.novo("ABC1D23", "Chevrolet", "Onix", 2300, "52998224725"))
                 .isInstanceOf(RegraDeNegocioException.class).hasMessageContaining("Ano");
         assertThatThrownBy(() -> Veiculo.novo("ABC1D23", "Chevrolet", "Onix", 2022, null))
                 .isInstanceOf(RegraDeNegocioException.class).hasMessageContaining("cliente");
-        assertThatThrownBy(() -> new Veiculo(null, null, "Chevrolet", "Onix", 2022, 1L, true))
+        assertThatThrownBy(() -> new Veiculo(null, null, "Chevrolet", "Onix", 2022, "52998224725", true))
                 .isInstanceOf(RegraDeNegocioException.class).hasMessageContaining("Placa");
     }
 
     @Test
     void desativarEAtualizarVeiculo() {
-        Veiculo v = Veiculo.novo("ABC1D23", "Chevrolet", "Onix", 2022, 1L);
+        Veiculo v = Veiculo.novo("ABC1D23", "Chevrolet", "Onix", 2022, "52998224725");
         assertThat(v.desativar().ativo()).isFalse();
         Veiculo atualizado = v.atualizar("Fiat", "Argo", 2023);
         assertThat(atualizado.marca()).isEqualTo("Fiat");

@@ -18,7 +18,7 @@ Autenticação por JWT (HS256). Papéis: `ADMIN` (login de atendente), `CLIENTE`
 | Recurso | Rotas | Papel |
 |---|---|---|
 | Login | `POST /api/auth/login` | público |
-| Clientes | `POST/GET /api/clientes`, `GET/PUT/DELETE /api/clientes/{id}`, `GET /api/clientes/documento/{documento}` | `ADMIN`; a consulta por documento também aceita `SERVICE` |
+| Clientes | `POST/GET /api/clientes`, `GET/PUT/DELETE /api/clientes/{id}` (o `{id}` é o CPF/CNPJ, com ou sem pontuação), `GET /api/clientes/documento/{documento}` | `ADMIN`; a consulta por documento também aceita `SERVICE` |
 | Veículos | `POST/GET /api/veiculos`, `GET/PUT/DELETE /api/veiculos/{id}`, `GET /api/veiculos/placa/{placa}` | `ADMIN` |
 | Serviços | `POST/GET /api/servicos`, `GET/PUT/DELETE /api/servicos/{id}` | `ADMIN` |
 | Peças | `POST/GET /api/pecas`, `GET/PUT/DELETE /api/pecas/{id}`, `GET /api/pecas/codigo/{codigo}` | `ADMIN` |

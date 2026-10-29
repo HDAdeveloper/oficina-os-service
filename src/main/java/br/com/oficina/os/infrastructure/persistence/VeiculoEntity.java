@@ -28,7 +28,7 @@ public class VeiculoEntity {
     int ano;
 
     @Column(name = "cliente_id", nullable = false)
-    Long clienteId;
+    String clienteId;
 
     @Column(nullable = false)
     boolean ativo;

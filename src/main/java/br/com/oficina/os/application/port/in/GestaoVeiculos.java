@@ -7,7 +7,7 @@ import java.util.List;
 /** Porta de entrada: casos de uso de veículos. */
 public interface GestaoVeiculos {
 
-    record NovoVeiculo(String placa, String marca, String modelo, int ano, Long clienteId) {
+    record NovoVeiculo(String placa, String marca, String modelo, int ano, String clienteId) {
     }
 
     record AlteracaoVeiculo(String marca, String modelo, int ano) {
@@ -23,7 +23,7 @@ public interface GestaoVeiculos {
 
     Veiculo buscarPorPlaca(String placa);
 
-    List<Veiculo> listarPorCliente(Long clienteId);
+    List<Veiculo> listarPorCliente(String clienteId);
 
     List<Veiculo> listar();
 }
