@@ -8,6 +8,11 @@ public enum EstadoSaga {
     ORCAMENTO_SOLICITADO(true, false),
     AGUARDANDO_APROVACAO(false, false),
     COBRANDO(true, false),
+    /**
+     * Pagamento por link: o Billing gerou o link e o cliente ainda vai pagar. O prazo aqui é a validade do link
+     * (não há reenvio: ao vencer sem pagamento roda a compensação A).
+     */
+    AGUARDANDO_PAGAMENTO(true, false),
     RESERVANDO_ESTOQUE(true, false),
     EM_EXECUCAO(false, false),
     /** Compensação A: o orçamento está sendo cancelado no Billing. */

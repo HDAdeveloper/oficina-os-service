@@ -3,6 +3,7 @@ package br.com.oficina.os.infrastructure.persistence;
 import br.com.oficina.os.application.port.out.SagaRepository;
 import br.com.oficina.os.domain.model.PassoSaga;
 import br.com.oficina.os.domain.model.Saga;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Component;
 
 import java.time.Instant;
@@ -29,6 +30,7 @@ public class SagaRepositoryAdapter implements SagaRepository {
         e.valorTotal = saga.getValorTotal();
         e.metodoPagamento = saga.getMetodoPagamento();
         e.pagamentoId = saga.getPagamentoId();
+        e.linkPagamento = saga.getLinkPagamento();
         e.reservaId = saga.getReservaId();
         e.motivo = saga.getMotivo() == null ? null : cortar(saga.getMotivo(), 1000);
         e.tentativas = saga.getTentativas();
@@ -53,6 +55,12 @@ public class SagaRepositoryAdapter implements SagaRepository {
     }
 
     @Override
+    public List<Saga> buscarRecentes(int limite) {
+        return jpa.findAllByOrderByAtualizadaEmDesc(PageRequest.of(0, limite)).stream()
+                .map(SagaRepositoryAdapter::paraDominio).toList();
+    }
+
+    @Override
     public List<Saga> buscarComPrazoVencido(Instant agora) {
         return jpa.findByPrazoLessThanEqual(agora).stream().map(SagaRepositoryAdapter::paraDominio).toList();
     }
@@ -60,7 +68,7 @@ public class SagaRepositoryAdapter implements SagaRepository {
     private static Saga paraDominio(SagaEntity e) {
         List<PassoSaga> passos = e.passos.stream().map(p -> new PassoSaga(p.em, p.tipo, p.detalhe)).toList();
         return Saga.reconstituir(new Saga.Dados(e.id, e.osId, e.correlationId, e.estado, e.orcamentoId, e.valorTotal,
-                e.metodoPagamento, e.pagamentoId, e.reservaId, e.motivo, e.tentativas, e.prazo, e.criadaEm,
+                e.metodoPagamento, e.pagamentoId, e.linkPagamento, e.reservaId, e.motivo, e.tentativas, e.prazo, e.criadaEm,
                 e.atualizadaEm, e.versao == null ? 0 : e.versao, passos));
     }
 

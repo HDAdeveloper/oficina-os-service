@@ -10,6 +10,7 @@ import br.com.oficina.os.application.port.in.EventoSaga.ExecucaoFinalizada;
 import br.com.oficina.os.application.port.in.EventoSaga.ExecucaoIniciada;
 import br.com.oficina.os.application.port.in.EventoSaga.OrcamentoCancelado;
 import br.com.oficina.os.application.port.in.EventoSaga.OrcamentoCriado;
+import br.com.oficina.os.application.port.in.EventoSaga.LinkPagamentoGerado;
 import br.com.oficina.os.application.port.in.EventoSaga.OrcamentoFalhou;
 import br.com.oficina.os.application.port.in.EventoSaga.PagamentoAprovado;
 import br.com.oficina.os.application.port.in.EventoSaga.PagamentoEstornado;
@@ -40,7 +41,7 @@ import java.util.Optional;
  * Orquestrador da Saga. Cada resposta dos outros serviços decide o próximo comando; quando um passo falha,
  * as compensações rodam em ordem inversa (docs/eventos.md):
  * <ul>
- *   <li>A) pagamento recusado: cancela o orçamento, OS volta ao diagnóstico;</li>
+ *   <li>A) pagamento recusado ou link de pagamento vencido: cancela o orçamento, OS volta ao diagnóstico;</li>
  *   <li>B) estoque insuficiente: estorna o pagamento, OS cancelada;</li>
  *   <li>C) falha na execução: libera o estoque, depois estorna o pagamento, OS cancelada.</li>
  * </ul>
@@ -49,6 +50,8 @@ import java.util.Optional;
 public class OrquestradorSaga implements ProcessadorEventos {
 
     private static final Logger LOG = LoggerFactory.getLogger(OrquestradorSaga.class);
+    /** Validade assumida quando o Billing não informa até quando o link vale. */
+    private static final Duration VALIDADE_PADRAO_DO_LINK = Duration.ofHours(24);
 
     private final SagaRepository sagas;
     private final MensagemProcessadaRepository processadas;
@@ -140,6 +143,11 @@ public class OrquestradorSaga implements ProcessadorEventos {
         return sagas.buscarPorOs(osId);
     }
 
+    /** As Sagas mexidas mais recentemente, para o painel de acompanhamento (limite entre 1 e 100). */
+    public List<Saga> sagasRecentes(int limite) {
+        return sagas.buscarRecentes(Math.min(Math.max(limite, 1), 100));
+    }
+
     private Saga exigirSaga(OrdemServico os, EstadoSaga estado, String acao) {
         return sagas.buscarPorOs(os.getId()).stream().filter(s -> s.getEstado() == estado).findFirst()
                 .orElseThrow(() -> new RegraDeNegocioException("O orçamento não pode ser " + acao
@@ -178,6 +186,7 @@ public class OrquestradorSaga implements ProcessadorEventos {
             case OrcamentoCriado e -> orcamentoCriado(saga, os, e, agora);
             case OrcamentoFalhou e -> orcamentoFalhou(saga, os, e, agora);
             case OrcamentoCancelado e -> encerrar(saga, "Orçamento cancelado", agora);
+            case LinkPagamentoGerado e -> linkGerado(saga, e, agora);
             case PagamentoAprovado e -> pagamentoAprovado(saga, os, e, agora);
             case PagamentoRecusado e -> compensarA(saga, os, e.motivo(), agora);
             case EstoqueReservado e -> estoqueReservado(saga, os, e, agora);
@@ -196,8 +205,9 @@ public class OrquestradorSaga implements ProcessadorEventos {
             case OrcamentoCriado e -> estado == EstadoSaga.ORCAMENTO_SOLICITADO;
             case OrcamentoFalhou e -> estado == EstadoSaga.ORCAMENTO_SOLICITADO;
             case OrcamentoCancelado e -> estado == EstadoSaga.CANCELANDO_ORCAMENTO;
-            case PagamentoAprovado e -> estado == EstadoSaga.COBRANDO;
-            case PagamentoRecusado e -> estado == EstadoSaga.COBRANDO;
+            case LinkPagamentoGerado e -> estado == EstadoSaga.COBRANDO;
+            case PagamentoAprovado e -> estado == EstadoSaga.COBRANDO || estado == EstadoSaga.AGUARDANDO_PAGAMENTO;
+            case PagamentoRecusado e -> estado == EstadoSaga.COBRANDO || estado == EstadoSaga.AGUARDANDO_PAGAMENTO;
             case EstoqueReservado e -> estado == EstadoSaga.RESERVANDO_ESTOQUE;
             case EstoqueInsuficiente e -> estado == EstadoSaga.RESERVANDO_ESTOQUE;
             case ExecucaoIniciada e -> estado == EstadoSaga.EM_EXECUCAO;
@@ -224,6 +234,19 @@ public class OrquestradorSaga implements ProcessadorEventos {
         ordens.salvar(os);
         saga.registrarMotivo(e.motivo());
         saga.mover(EstadoSaga.ORCAMENTO_FALHOU, e.motivo(), agora, null);
+        sagas.salvar(saga);
+    }
+
+    /**
+     * Pagamento por link: a Saga espera o cliente pagar. O prazo passa a ser a validade do link (mais a folga de
+     * uma resposta), porque o Billing é quem vence o link e avisa; se ele não avisar, o prazo compensa daqui.
+     */
+    private void linkGerado(Saga saga, LinkPagamentoGerado e, Instant agora) {
+        Instant validade = e.expiraEm() != null ? e.expiraEm() : agora.plus(VALIDADE_PADRAO_DO_LINK);
+        saga.registrarPagamento(e.pagamentoId());
+        saga.registrarLink(e.link());
+        saga.mover(EstadoSaga.AGUARDANDO_PAGAMENTO, "Link de pagamento gerado (válido até " + validade + ")", agora,
+                validade.plus(prazoResposta));
         sagas.salvar(saga);
     }
 
@@ -316,7 +339,8 @@ public class OrquestradorSaga implements ProcessadorEventos {
             if (os == null) {
                 continue;
             }
-            if (saga.getTentativas() < maxReenvios) {
+            // Link de pagamento não se reenvia: passou da validade sem pagamento, compensa direto
+            if (saga.getEstado() != EstadoSaga.AGUARDANDO_PAGAMENTO && saga.getTentativas() < maxReenvios) {
                 reenviar(saga, os, agora);
             } else {
                 desistir(saga, os, agora);
@@ -352,6 +376,7 @@ public class OrquestradorSaga implements ProcessadorEventos {
                 sagas.salvar(saga);
             }
             case COBRANDO -> compensarA(saga, os, "Sem resposta do Billing ao cobrar", agora);
+            case AGUARDANDO_PAGAMENTO -> compensarA(saga, os, "Link de pagamento expirou sem pagamento", agora);
             case RESERVANDO_ESTOQUE -> compensarB(saga, os, "Sem resposta do Execution ao reservar estoque", agora);
             case CANCELANDO_ORCAMENTO -> encerrar(saga, "Cancelamento do orçamento sem confirmação", agora);
             case LIBERANDO_ESTOQUE -> pendente(saga, os, EstadoSaga.LIBERACAO_PENDENTE, agora);

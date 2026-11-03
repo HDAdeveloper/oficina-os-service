@@ -1,6 +1,7 @@
 package br.com.oficina.os.application.port.in;
 
 import java.math.BigDecimal;
+import java.time.Instant;
 
 /** Eventos que o Billing e o Execution enviam ao orquestrador (docs/eventos.md). */
 public sealed interface EventoSaga {
@@ -12,6 +13,10 @@ public sealed interface EventoSaga {
     }
 
     record OrcamentoCancelado() implements EventoSaga {
+    }
+
+    /** Pagamento por link: o cliente ainda vai pagar; {@code expiraEm} é até quando o link vale. */
+    record LinkPagamentoGerado(String pagamentoId, String link, Instant expiraEm) implements EventoSaga {
     }
 
     record PagamentoAprovado(String pagamentoId, String orcamentoId) implements EventoSaga {

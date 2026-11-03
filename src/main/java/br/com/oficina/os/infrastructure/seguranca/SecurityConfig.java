@@ -26,6 +26,8 @@ public class SecurityConfig {
                         .requestMatchers("/actuator/health", "/actuator/health/**", "/actuator/info").permitAll()
                         .requestMatchers("/v3/api-docs", "/v3/api-docs/**", "/swagger-ui.html",
                                 "/swagger-ui/**").permitAll()
+                        // Painel de acompanhamento da Saga: a página é estática; os dados vêm da API, que exige o JWT
+                        .requestMatchers(HttpMethod.GET, "/saga-monitor.html").permitAll()
                         // Cliente final (token da Lambda de CPF): só a própria área
                         .requestMatchers(HttpMethod.GET, "/api/minhas-ordens").hasRole("CLIENTE")
                         // A Lambda consulta o cliente pelo documento com um token de serviço

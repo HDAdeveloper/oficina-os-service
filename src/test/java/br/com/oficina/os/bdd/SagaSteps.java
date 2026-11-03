@@ -55,10 +55,11 @@ public class SagaSteps {
         int n = SEQ.incrementAndGet();
         String cpf = CpfDeTeste.gerar(n);
         String placa = String.format("BDD%dA%02d", n % 10, n % 100);
-        criar("/api/clientes", Map.of("nome", "Cliente BDD " + n, "documento", cpf,
-                "email", "bdd" + n + "@oficina.com"));
-        criar("/api/veiculos", Map.of("placa", placa, "marca", "VW", "modelo", "Gol", "ano", 2020,
-                "clienteId", cpf));
+        // cliente tem id em texto (o CPF) e o veículo também não usa id numérico aqui: só confere o 201
+        chamar(post("/api/clientes"), Map.of("nome", "Cliente BDD " + n, "documento", cpf,
+                "email", "bdd" + n + "@oficina.com")).andExpect(status().isCreated());
+        chamar(post("/api/veiculos"), Map.of("placa", placa, "marca", "VW", "modelo", "Gol", "ano", 2020,
+                "clienteId", cpf)).andExpect(status().isCreated());
         long servicoId = criar("/api/servicos", Map.of("nome", "Alinhamento BDD " + n, "preco", 150.00,
                 "tempoEstimadoMinutos", 30));
         long pecaId = criar("/api/pecas", Map.of("codigo", "BDD-" + n, "nome", "Filtro BDD " + n,

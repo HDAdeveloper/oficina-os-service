@@ -22,6 +22,7 @@ public class Saga {
     private BigDecimal valorTotal;
     private String metodoPagamento;
     private String pagamentoId;
+    private String linkPagamento;
     private String reservaId;
     private String motivo;
     private int tentativas;
@@ -53,7 +54,8 @@ public class Saga {
 
     /** Dados completos de uma Saga existente, usados pela persistência para reconstruir o objeto. */
     public record Dados(String id, Long osId, String correlationId, EstadoSaga estado, String orcamentoId,
-                        BigDecimal valorTotal, String metodoPagamento, String pagamentoId, String reservaId,
+                        BigDecimal valorTotal, String metodoPagamento, String pagamentoId, String linkPagamento,
+                        String reservaId,
                         String motivo, int tentativas, Instant prazo, Instant criadaEm, Instant atualizadaEm,
                         long versao, List<PassoSaga> passos) {
     }
@@ -64,6 +66,7 @@ public class Saga {
         s.valorTotal = d.valorTotal();
         s.metodoPagamento = d.metodoPagamento();
         s.pagamentoId = d.pagamentoId();
+        s.linkPagamento = d.linkPagamento();
         s.reservaId = d.reservaId();
         s.motivo = d.motivo();
         s.tentativas = d.tentativas();
@@ -121,6 +124,10 @@ public class Saga {
         this.pagamentoId = idPagamento;
     }
 
+    public void registrarLink(String link) {
+        this.linkPagamento = link;
+    }
+
     public void registrarReserva(String idReserva) {
         this.reservaId = idReserva;
     }
@@ -139,6 +146,7 @@ public class Saga {
     public BigDecimal getValorTotal() { return valorTotal; }
     public String getMetodoPagamento() { return metodoPagamento; }
     public String getPagamentoId() { return pagamentoId; }
+    public String getLinkPagamento() { return linkPagamento; }
     public String getReservaId() { return reservaId; }
     public String getMotivo() { return motivo; }
     public int getTentativas() { return tentativas; }

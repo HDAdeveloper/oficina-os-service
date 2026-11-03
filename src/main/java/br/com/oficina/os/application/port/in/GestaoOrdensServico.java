@@ -61,6 +61,9 @@ public interface GestaoOrdensServico {
     /** Diário da Saga da OS (a mais recente primeiro), para acompanhar pagamento, reserva e compensações. */
     List<Saga> consultarSagas(Long id);
 
+    /** As Sagas mexidas mais recentemente (todas as OS), para o painel de acompanhamento. Limite de 1 a 100. */
+    List<Saga> listarSagasRecentes(int limite);
+
     /** Cliente recusou: volta ao diagnóstico e cancela o orçamento no Billing. */
     OrdemServico recusarOrcamento(Long id, String motivo);
 

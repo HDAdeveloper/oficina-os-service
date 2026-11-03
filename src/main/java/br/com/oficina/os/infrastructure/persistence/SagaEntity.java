@@ -52,6 +52,9 @@ public class SagaEntity {
     @Column(name = "pagamento_id")
     String pagamentoId;
 
+    @Column(name = "link_pagamento", length = 500)
+    String linkPagamento;
+
     @Column(name = "reserva_id")
     String reservaId;
 

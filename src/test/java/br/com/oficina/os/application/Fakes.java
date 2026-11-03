@@ -223,6 +223,12 @@ final class Fakes {
         }
 
         @Override
+        public List<Saga> buscarRecentes(int limite) {
+            return dados.values().stream()
+                    .sorted(java.util.Comparator.comparing(Saga::getAtualizadaEm).reversed()).limit(limite).toList();
+        }
+
+        @Override
         public List<Saga> buscarComPrazoVencido(java.time.Instant agora) {
             return dados.values().stream()
                     .filter(s -> s.getPrazo() != null && !s.getPrazo().isAfter(agora)).toList();

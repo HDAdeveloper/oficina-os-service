@@ -51,6 +51,22 @@ class EventoMapperTest {
     }
 
     @Test
+    void traduzOLinkDePagamentoComAValidade() throws Exception {
+        assertThat(evento("LINK_PAGAMENTO_GERADO",
+                "{\"pagamentoId\":\"p-1\",\"orcamentoId\":\"o-1\",\"link\":\"https://mp/pagar/1\","
+                        + "\"expiraEm\":\"2026-10-23T13:00:00Z\"}"))
+                .isEqualTo(new EventoSaga.LinkPagamentoGerado("p-1", "https://mp/pagar/1",
+                        java.time.Instant.parse("2026-10-23T13:00:00Z")));
+        assertThat(evento("LINK_PAGAMENTO_GERADO", "{\"pagamentoId\":\"p-1\",\"link\":\"https://x\"}"))
+                .isEqualTo(new EventoSaga.LinkPagamentoGerado("p-1", "https://x", null));
+        assertThatThrownBy(() -> evento("LINK_PAGAMENTO_GERADO", "{\"pagamentoId\":\"p-1\"}"))
+                .isInstanceOf(MensagemInvalidaException.class).hasMessageContaining("link");
+        assertThatThrownBy(() -> evento("LINK_PAGAMENTO_GERADO",
+                "{\"pagamentoId\":\"p-1\",\"link\":\"https://x\",\"expiraEm\":\"amanha\"}"))
+                .isInstanceOf(MensagemInvalidaException.class).hasMessageContaining("expiraEm");
+    }
+
+    @Test
     void traduzOsEventosDoExecution() throws Exception {
         assertThat(evento("ESTOQUE_RESERVADO", "{\"reservaId\":\"r-1\"}"))
                 .isEqualTo(new EventoSaga.EstoqueReservado("r-1"));

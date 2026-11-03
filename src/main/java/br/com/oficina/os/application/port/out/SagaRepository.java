@@ -16,6 +16,9 @@ public interface SagaRepository {
     /** Todas as Sagas da OS, da mais recente para a mais antiga. */
     List<Saga> buscarPorOs(Long osId);
 
+    /** As Sagas mexidas há menos tempo, da mais recente para a mais antiga (painel de acompanhamento). */
+    List<Saga> buscarRecentes(int limite);
+
     /** Sagas que aguardam resposta e cujo prazo já passou. */
     List<Saga> buscarComPrazoVencido(Instant agora);
 }

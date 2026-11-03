@@ -537,6 +537,36 @@
           }
         },
         {
+          "name": "Aprovar orçamento com pagamento por LINK (Saga espera o cliente pagar)",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"metodoPagamento\": \"LINK\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/ordens-servico/{{osId}}/orcamento/aprovacao",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "ordens-servico",
+                "{{osId}}",
+                "orcamento",
+                "aprovacao"
+              ]
+            },
+            "description": "Provedor simulado: gera um link e a Saga fica em AGUARDANDO_PAGAMENTO (veja linkPagamento em GET .../saga). Para pagar: POST {billing}/api/simulador/pagamentos/{pagamentoId}/aprovar (ou /expirar). Com o provedor mercadopago o método é ignorado: sempre gera link."
+          }
+        },
+        {
           "name": "Recusar orçamento",
           "request": {
             "method": "POST",

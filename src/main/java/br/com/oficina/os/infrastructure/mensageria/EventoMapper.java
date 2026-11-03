@@ -5,6 +5,8 @@ import br.com.oficina.os.application.port.in.EventoSaga;
 import com.fasterxml.jackson.databind.JsonNode;
 
 import java.math.BigDecimal;
+import java.time.Instant;
+import java.time.format.DateTimeParseException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -27,6 +29,8 @@ public class EventoMapper {
                     decimal(p, "valorTotal"));
             case "ORCAMENTO_FALHOU" -> new EventoSaga.OrcamentoFalhou(texto(p, "motivo"));
             case "ORCAMENTO_CANCELADO" -> new EventoSaga.OrcamentoCancelado();
+            case "LINK_PAGAMENTO_GERADO" -> new EventoSaga.LinkPagamentoGerado(obrigatorio(p, "pagamentoId"),
+                    obrigatorio(p, "link"), instante(p, "expiraEm"));
             case "PAGAMENTO_APROVADO" -> new EventoSaga.PagamentoAprovado(obrigatorio(p, "pagamentoId"),
                     texto(p, "orcamentoId"));
             case "PAGAMENTO_RECUSADO" -> new EventoSaga.PagamentoRecusado(texto(p, "orcamentoId"),
@@ -88,6 +92,18 @@ public class EventoMapper {
             return n.isNumber() ? n.decimalValue() : new BigDecimal(n.asText());
         } catch (NumberFormatException e) {
             throw new MensagemInvalidaException("Valor numérico inválido em " + campo);
+        }
+    }
+
+    private static Instant instante(JsonNode no, String campo) {
+        String valor = texto(no, campo);
+        if (vazio(valor)) {
+            return null;
+        }
+        try {
+            return Instant.parse(valor);
+        } catch (DateTimeParseException e) {
+            throw new MensagemInvalidaException("Data inválida em " + campo + ": " + valor);
         }
     }
 

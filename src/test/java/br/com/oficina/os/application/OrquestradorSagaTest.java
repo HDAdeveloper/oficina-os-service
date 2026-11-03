@@ -8,6 +8,7 @@ import br.com.oficina.os.application.port.in.EventoSaga.EstoqueReservado;
 import br.com.oficina.os.application.port.in.EventoSaga.ExecucaoFalhou;
 import br.com.oficina.os.application.port.in.EventoSaga.ExecucaoFinalizada;
 import br.com.oficina.os.application.port.in.EventoSaga.ExecucaoIniciada;
+import br.com.oficina.os.application.port.in.EventoSaga.LinkPagamentoGerado;
 import br.com.oficina.os.application.port.in.EventoSaga.OrcamentoCancelado;
 import br.com.oficina.os.application.port.in.EventoSaga.OrcamentoCriado;
 import br.com.oficina.os.application.port.in.EventoSaga.OrcamentoFalhou;
@@ -326,6 +327,121 @@ class OrquestradorSagaTest {
         assertThat(saga().getEstado()).isEqualTo(EstadoSaga.ENCERRADA);
         evento(new OrcamentoCriado("orc-tardio", new BigDecimal("220.00"))); // resposta que chegou atrasada
         assertThat(os().getStatus()).isEqualTo(StatusOS.CANCELADA);
+    }
+
+    // ------------------------------------------------------------ painel
+
+    @Test
+    void sagasRecentesVemDaMaisNovaParaAMaisAntigaELimitamAoIntervaloPermitido() {
+        service.solicitarOrcamento(osId);
+        relogio.avancar(Duration.ofMinutes(1));
+        evento(new OrcamentoCriado("orc-1", new BigDecimal("220.00"))); // mexe na Saga: ela fica a mais recente
+
+        assertThat(orquestrador.sagasRecentes(10)).extracting(Saga::getId).containsExactly(saga().getId());
+        assertThat(orquestrador.sagasRecentes(0)).hasSize(1);       // piso 1
+        assertThat(orquestrador.sagasRecentes(100000)).hasSize(1);  // teto 100
+    }
+
+    // ------------------------------------------------------------ pagamento por link
+
+    private LinkPagamentoGerado link(Duration validade) {
+        return new LinkPagamentoGerado("pag-1", "https://mp/pagar/1", relogio.agora.plus(validade));
+    }
+
+    @Test
+    void linkGeradoColocaASagaParaEsperarOClienteComPrazoDaValidade() {
+        ate(EstadoSaga.COBRANDO);
+
+        evento(link(Duration.ofHours(1)));
+
+        assertThat(saga().getEstado()).isEqualTo(EstadoSaga.AGUARDANDO_PAGAMENTO);
+        assertThat(saga().getLinkPagamento()).isEqualTo("https://mp/pagar/1");
+        assertThat(saga().getPagamentoId()).isEqualTo("pag-1");
+        // validade do link + 60 s de folga para o aviso do Billing chegar antes do prazo
+        assertThat(saga().getPrazo()).isEqualTo(relogio.agora.plus(Duration.ofHours(1)).plusSeconds(60));
+        assertThat(saga().getTentativas()).isZero();
+        assertThat(os().getStatus()).isEqualTo(StatusOS.AGUARDANDO_APROVACAO);
+    }
+
+    @Test
+    void linkSemValidadeInformadaUsaUmDiaPorPadrao() {
+        ate(EstadoSaga.COBRANDO);
+
+        evento(new LinkPagamentoGerado("pag-1", "https://mp/pagar/1", null));
+
+        assertThat(saga().getPrazo()).isEqualTo(relogio.agora.plus(Duration.ofHours(24)).plusSeconds(60));
+    }
+
+    @Test
+    void pagamentoAprovadoDepoisDoLinkSegueParaAReservaDoEstoque() {
+        ate(EstadoSaga.COBRANDO);
+        evento(link(Duration.ofHours(1)));
+
+        evento(new PagamentoAprovado("pag-1", "orc-1"));
+
+        assertThat(saga().getEstado()).isEqualTo(EstadoSaga.RESERVANDO_ESTOQUE);
+        assertThat(comandos.tipos()).last().isEqualTo("RESERVAR_ESTOQUE");
+    }
+
+    @Test
+    void linkVencidoNoBillingRodaACompensacaoA() {
+        ate(EstadoSaga.COBRANDO);
+        evento(link(Duration.ofHours(1)));
+
+        evento(new EventoSaga.PagamentoRecusado("orc-1", "Link de pagamento expirou sem pagamento"));
+
+        assertThat(saga().getEstado()).isEqualTo(EstadoSaga.CANCELANDO_ORCAMENTO);
+        assertThat(os().getStatus()).isEqualTo(StatusOS.EM_DIAGNOSTICO);
+        assertThat(comandos.tipos()).last().isEqualTo("CANCELAR_ORCAMENTO");
+    }
+
+    @Test
+    void semAvisoDoBillingOPrazoDoLinkCompensaSemReenviarACobranca() {
+        ate(EstadoSaga.COBRANDO);
+        evento(link(Duration.ofHours(1)));
+        int comandosAntes = comandos.comandos.size();
+
+        relogio.avancar(Duration.ofMinutes(30)); // o cliente ainda pode pagar: nada acontece
+        assertThat(orquestrador.verificarPrazos()).isZero();
+        relogio.avancar(Duration.ofMinutes(32)); // passou a validade e a folga
+        assertThat(orquestrador.verificarPrazos()).isEqualTo(1);
+
+        assertThat(saga().getEstado()).isEqualTo(EstadoSaga.CANCELANDO_ORCAMENTO);
+        assertThat(os().getStatus()).isEqualTo(StatusOS.EM_DIAGNOSTICO);
+        assertThat(comandos.comandos).hasSize(comandosAntes + 1);
+        assertThat(comandos.tipos()).last().isEqualTo("CANCELAR_ORCAMENTO");
+        assertThat(saga().getMotivo()).contains("Link de pagamento expirou");
+    }
+
+    @Test
+    void linkForaDoPassoDeCobrancaEhIgnorado() {
+        ate(EstadoSaga.AGUARDANDO_APROVACAO);
+
+        evento(link(Duration.ofHours(1)));
+
+        assertThat(saga().getEstado()).isEqualTo(EstadoSaga.AGUARDANDO_APROVACAO);
+        assertThat(saga().getLinkPagamento()).isNull();
+    }
+
+    @Test
+    void linkRepetidoNaoReiniciaAEspera() {
+        ate(EstadoSaga.COBRANDO);
+        evento(link(Duration.ofHours(1)));
+        var prazo = saga().getPrazo();
+
+        evento(link(Duration.ofHours(5))); // reenvio do Billing quando a cobrança foi repetida
+
+        assertThat(saga().getEstado()).isEqualTo(EstadoSaga.AGUARDANDO_PAGAMENTO);
+        assertThat(saga().getPrazo()).isEqualTo(prazo);
+    }
+
+    @Test
+    void clienteNaoRecusaOOrcamentoEnquantoOLinkEstaAberto() {
+        ate(EstadoSaga.COBRANDO);
+        evento(link(Duration.ofHours(1)));
+
+        assertThatThrownBy(() -> service.recusarOrcamento(osId, "mudei de ideia"))
+                .isInstanceOf(RegraDeNegocioException.class);
     }
 
     // ------------------------------------------------------------ prazos

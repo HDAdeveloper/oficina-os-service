@@ -179,6 +179,11 @@ public class OrdemServicoService implements GestaoOrdensServico {
     }
 
     @Override
+    public List<Saga> listarSagasRecentes(int limite) {
+        return saga.sagasRecentes(limite);
+    }
+
+    @Override
     public OrdemServico recusarOrcamento(Long id, String motivo) {
         OrdemServico os = buscarPorId(id);
         exigirAguardandoAprovacao(os, "recusado");

@@ -74,6 +74,23 @@ class SagaPersistenciaTest extends PostgresTestBase {
     }
 
     @Test
+    void guardaOLinkDePagamentoEOPrazoDeEspera() {
+        Saga saga = Saga.iniciar("saga-link", osId, "corr-1", T0, T0.plusSeconds(60));
+        saga.registrarPagamento("pag-1");
+        saga.registrarLink("https://mp/pagar/abc");
+        saga.mover(EstadoSaga.AGUARDANDO_PAGAMENTO, "Link gerado", T0.plusSeconds(5), T0.plusSeconds(3660));
+        sagas.salvar(saga);
+        limparCache();
+
+        Saga lida = sagas.buscarPorId("saga-link").orElseThrow();
+
+        assertThat(lida.getEstado()).isEqualTo(EstadoSaga.AGUARDANDO_PAGAMENTO);
+        assertThat(lida.getLinkPagamento()).isEqualTo("https://mp/pagar/abc");
+        assertThat(lida.getPagamentoId()).isEqualTo("pag-1");
+        assertThat(lida.getPrazo()).isEqualTo(T0.plusSeconds(3660));
+    }
+
+    @Test
     void atualizaASagaExistenteSemDuplicar() {
         sagas.salvar(Saga.iniciar("saga-2", osId, "corr", T0, T0.plusSeconds(60)));
         limparCache();
@@ -102,6 +119,19 @@ class SagaPersistenciaTest extends PostgresTestBase {
 
         assertThat(lista).extracting(Saga::getId).containsExactly("nova", "antiga");
         assertThat(sagas.buscarPorOs(-1L)).isEmpty();
+    }
+
+    @Test
+    void buscaAsSagasMaisRecentementeAtualizadasLimitandoAQuantidade() {
+        // o banco é compartilhado com outros testes: datas bem no futuro garantem que estas sejam as mais recentes
+        Instant base = Instant.now().plus(java.time.Duration.ofDays(3650));
+        sagas.salvar(Saga.iniciar("a1", osId, "c", base, base.plusSeconds(60)));
+        sagas.salvar(Saga.iniciar("a2", osId, "c", base.plusSeconds(10), base.plusSeconds(70)));
+        sagas.salvar(Saga.iniciar("a3", osId, "c", base.plusSeconds(20), base.plusSeconds(80)));
+        limparCache();
+
+        assertThat(sagas.buscarRecentes(2)).extracting(Saga::getId).containsExactly("a3", "a2");
+        assertThat(sagas.buscarRecentes(100)).extracting(Saga::getId).contains("a1", "a2", "a3");
     }
 
     @Test

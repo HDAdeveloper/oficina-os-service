@@ -1,0 +1,286 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Monitor da Saga</title>
+<style>
+  :root { --bg:#f6f7f9; --card:#fff; --tx:#1d2330; --mut:#6b7385; --bd:#d9dde5; --ok:#1f9d55; --cur:#2563eb; --err:#d64545; --warn:#d98a00; --vis:#bcd3f7; }
+  @media (prefers-color-scheme: dark) { :root { --bg:#12151b; --card:#1b2029; --tx:#e6e9ef; --mut:#98a1b3; --bd:#2f3745; --vis:#27406b; } }
+  * { box-sizing: border-box; }
+  body { margin:0; font:14px/1.45 system-ui,sans-serif; background:var(--bg); color:var(--tx); }
+  header { display:flex; flex-wrap:wrap; gap:12px; align-items:center; padding:12px 16px; border-bottom:1px solid var(--bd); background:var(--card); }
+  h1 { font-size:18px; margin:0 12px 0 0; }
+  main { display:grid; grid-template-columns: 330px 1fr; gap:16px; padding:16px; }
+  @media (max-width:900px){ main { grid-template-columns:1fr; } }
+  section { background:var(--card); border:1px solid var(--bd); border-radius:10px; padding:12px; }
+  h2 { font-size:14px; margin:0 0 8px; color:var(--mut); text-transform:uppercase; letter-spacing:.04em; }
+  input, button { font:inherit; padding:5px 9px; border:1px solid var(--bd); border-radius:6px; background:var(--card); color:var(--tx); }
+  button { cursor:pointer; } button:hover { border-color:var(--cur); }
+  button.p { background:var(--ok); color:#fff; border-color:var(--ok); } button.d { background:var(--err); color:#fff; border-color:var(--err); }
+  #lista .it { padding:7px 8px; border:1px solid var(--bd); border-radius:8px; margin-bottom:6px; cursor:pointer; }
+  #lista .it:hover, #lista .it.sel { border-color:var(--cur); }
+  .badge { display:inline-block; padding:1px 7px; border-radius:10px; font-size:12px; color:#fff; background:var(--cur); }
+  .badge.fim { background:var(--ok); } .badge.mal { background:var(--err); } .badge.aviso { background:var(--warn); }
+  .mut { color:var(--mut); font-size:12px; }
+  .fluxo { display:flex; flex-wrap:wrap; gap:6px; align-items:center; margin:6px 0 10px; }
+  .st { padding:6px 9px; border:2px solid var(--bd); border-radius:8px; font-size:12px; opacity:.55; }
+  .st.vis { background:var(--vis); opacity:1; border-color:var(--vis); }
+  .st.cur { background:var(--cur); color:#fff; border-color:var(--cur); opacity:1; font-weight:600; box-shadow:0 0 0 3px rgba(37,99,235,.25); }
+  .st.cur.fim { background:var(--ok); border-color:var(--ok); } .st.cur.mal { background:var(--err); border-color:var(--err); }
+  .seta { color:var(--mut); } .rot { width:100%; font-size:12px; color:var(--mut); margin-top:4px; }
+  table.esc { width:100%; border-collapse:collapse; table-layout:fixed; margin-top:6px; }
+  table.esc th { font-size:12px; padding:4px; border-bottom:2px solid var(--bd); }
+  table.esc td { padding:4px 6px; border-bottom:1px solid var(--bd); vertical-align:top; word-break:break-word; font-size:12px; }
+  td.hora { width:74px; color:var(--mut); font-variant-numeric: tabular-nums; }
+  .msg { padding:3px 8px; border-radius:6px; border:1px solid var(--bd); display:block; }
+  .msg.cmd { background:rgba(37,99,235,.12); border-color:var(--cur); } .msg.evt { background:rgba(31,157,85,.12); border-color:var(--ok); }
+  .msg.ign { background:rgba(214,69,69,.1); border-color:var(--err); } .msg.int { color:var(--mut); }
+  .acoes { display:flex; flex-wrap:wrap; gap:8px; align-items:center; margin-top:8px; }
+  .link { word-break:break-all; font-size:12px; }
+  #erro { position:fixed; right:16px; top:64px; max-width:440px; background:var(--err); color:#fff; padding:8px 12px; border-radius:8px; z-index:9; box-shadow:0 2px 8px rgba(0,0,0,.3); }
+  #erro:empty { display:none; }
+  .demo { display:flex; flex-wrap:wrap; gap:8px; align-items:center; }
+  .dica { margin-top:8px; padding:8px 10px; border-left:4px solid var(--cur); background:rgba(37,99,235,.08); border-radius:4px; }
+  select { font:inherit; padding:5px 9px; border:1px solid var(--bd); border-radius:6px; background:var(--card); color:var(--tx); }
+</style>
+</head>
+<body>
+<header>
+  <h1>Monitor da Saga <small class="mut">v5</small></h1>
+  <span id="sessao" class="mut"></span>
+  <form id="loginForm" style="display:none;gap:6px">
+    <input id="usr" placeholder="usuario" value="admin" size="9"><input id="pwd" type="password" placeholder="senha" value="admin123" size="9">
+    <button>Entrar</button>
+  </form>
+  <label class="mut">OS: <input id="osId" size="6" placeholder="id"></label>
+  <button id="abrir">Acompanhar</button>
+  <label class="mut">Billing: <input id="billing" size="22" value="http://localhost:8082"></label>
+  <label class="mut">Execution: <input id="execution" size="22" value="http://localhost:8083"></label>
+  <span id="erro"></span>
+</header>
+<main>
+  <section><h2>Últimas Sagas</h2><div id="lista" class="mut">Entre para ver as Sagas.</div></section>
+  <div>
+    <section style="margin-bottom:16px">
+      <h2>Painel de demonstração</h2>
+      <div class="demo">
+        <label class="mut">Cenário:
+          <select id="cenario">
+            <option value="feliz">Caminho feliz (pagamento aprovado na hora)</option>
+            <option value="link">Pagamento por link (cliente paga depois)</option>
+            <option value="fund">Compensação A: saldo insuficiente (FUND)</option>
+            <option value="semestoque">Compensação B: sem estoque (estorna o pagamento)</option>
+            <option value="falhaexec">Compensação C: execução falha (você aciona)</option>
+            <option value="erro">Provedor de pagamento fora do ar (ERRO)</option>
+          </select>
+        </label>
+        <button id="criarDemo" class="p">Criar OS de demonstração</button>
+        <span id="demoMsg" class="mut"></span>
+      </div>
+      <div id="dica" class="dica" style="display:none"></div>
+    </section>
+    <section>
+      <h2>Máquina de estados <span id="titulo" class="mut"></span></h2>
+      <div id="resumo" class="mut">Escolha uma Saga na lista ou informe o id da OS.</div>
+      <div class="rot">Caminho feliz</div><div class="fluxo" id="feliz"></div>
+      <div class="rot">Compensações e finais</div><div class="fluxo" id="comp"></div>
+      <div id="acoes" class="acoes"></div>
+    </section>
+    <section style="margin-top:16px">
+      <h2>Mensagens em ordem (OS Service ↔ Billing ↔ Execution)</h2>
+      <table class="esc"><thead><tr><th>Hora</th><th>OS Service</th><th>Billing</th><th>Execution</th></tr></thead><tbody id="escada"></tbody></table>
+    </section>
+  </div>
+</main>
+<script>
+const FELIZ = ['ORCAMENTO_SOLICITADO','AGUARDANDO_APROVACAO','COBRANDO','AGUARDANDO_PAGAMENTO','RESERVANDO_ESTOQUE','EM_EXECUCAO','CONCLUIDA'];
+const COMP = ['CANCELANDO_ORCAMENTO','LIBERANDO_ESTOQUE','ESTORNANDO','CANCELADA','ENCERRADA','ORCAMENTO_FALHOU','ESTORNO_PENDENTE','LIBERACAO_PENDENTE'];
+const FINAIS_BONS = ['CONCLUIDA','ENCERRADA','CANCELADA'];
+const FINAIS_MAUS = ['ORCAMENTO_FALHOU','ESTORNO_PENDENTE','LIBERACAO_PENDENTE'];
+// estado -> comando que o OS Service envia ao entrar nele
+const COMANDO = { ORCAMENTO_SOLICITADO:['b','GERAR_ORCAMENTO'], COBRANDO:['b','COBRAR'], RESERVANDO_ESTOQUE:['x','RESERVAR_ESTOQUE'],
+  CANCELANDO_ORCAMENTO:['b','CANCELAR_ORCAMENTO'], LIBERANDO_ESTOQUE:['x','LIBERAR_ESTOQUE'], ESTORNANDO:['b','ESTORNAR'] };
+let token = null, osSel = null, sagaSel = null, timer = null, timerLista = null;
+const $ = id => document.getElementById(id);
+const esc = s => String(s ?? '').replace(/[&<>"]/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+const hora = i => i ? new Date(i).toLocaleTimeString('pt-BR') : '';
+function erro(m){ $('erro').textContent = m || ''; }
+try { token = sessionStorage.getItem('tk'); } catch(e) {}
+
+async function api(url, opts = {}) {
+  const r = await fetch(url, { ...opts, headers: { ...(opts.headers||{}), ...(token ? { Authorization: 'Bearer ' + token } : {}), 'Content-Type': 'application/json' } });
+  if (r.status === 401 || r.status === 403) { sair(); throw new Error('Sessão expirada ou sem permissão: entre novamente'); }
+  if (!r.ok) throw new Error(url + ' -> HTTP ' + r.status);
+  return r.status === 204 ? null : r.json();
+}
+function sair(){ token = null; try { sessionStorage.removeItem('tk'); } catch(e) {} mostrar(); }
+function mostrar(){ $('loginForm').style.display = token ? 'none' : 'flex'; $('sessao').textContent = token ? 'conectado' : 'não conectado'; }
+$('loginForm').onsubmit = async e => {
+  e.preventDefault(); erro();
+  try {
+    const r = await fetch('/api/auth/login', { method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify({ usuario:$('usr').value, senha:$('pwd').value }) });
+    if (!r.ok) throw new Error('Login recusado (HTTP ' + r.status + ')');
+    token = (await r.json()).token; try { sessionStorage.setItem('tk', token); } catch(x) {}
+    mostrar(); iniciar();
+  } catch (x) { erro(x.message); }
+};
+$('abrir').onclick = () => { const v = $('osId').value.trim(); if (v) escolher(v); };
+
+function badge(estado){
+  const c = FINAIS_BONS.includes(estado) ? 'fim' : FINAIS_MAUS.includes(estado) ? 'mal' : COMP.includes(estado) ? 'aviso' : '';
+  return '<span class="badge ' + c + '">' + esc(estado) + '</span>';
+}
+async function carregarLista(){
+  if (!token) return;
+  try {
+    const l = await api('/api/sagas?limite=30');
+    $('lista').innerHTML = l.length ? l.map(s => '<div class="it ' + (String(s.osId) === String(osSel) ? 'sel' : '') + '" data-os="' + s.osId + '">'
+      + '<b>OS ' + s.osId + '</b> ' + badge(s.estado) + '<div class="mut">' + hora(s.atualizadaEm) + (s.valorTotal != null ? ' · R$ ' + s.valorTotal : '') + '</div></div>').join('')
+      : 'Nenhuma Saga ainda.';
+    document.querySelectorAll('#lista .it').forEach(e => e.onclick = () => escolher(e.dataset.os));
+  } catch (x) { erro(x.message); }
+}
+function escolher(os){ osSel = os; $('osId').value = os; carregarSaga(); carregarLista(); }
+
+function caixa(estado, s, visitados){
+  const cur = s.estado === estado, vis = visitados.has(estado);
+  const k = cur ? ' cur' + (FINAIS_BONS.includes(estado) ? ' fim' : FINAIS_MAUS.includes(estado) ? ' mal' : '') : vis ? ' vis' : '';
+  return '<span class="st' + k + '">' + estado.replaceAll('_', ' ') + '</span>';
+}
+function linha(lista, s, v){ return lista.map(e => caixa(e, s, v)).join('<span class="seta">›</span>'); }
+
+function ator(passo){
+  // devolve [coluna, classe, texto]
+  const t = passo.tipo;
+  if (t === 'EVENTO') {
+    const n = passo.detalhe || '';
+    const col = /estoque|reserva|execu|servico|liberad/i.test(n) ? 'x' : 'b';
+    return [col, 'evt', '← ' + n];
+  }
+  if (t === 'EVENTO_IGNORADO') return ['o', 'ign', 'ignorado: ' + (passo.detalhe || '')];
+  if (t === 'REENVIO') return ['o', 'cmd', 'reenvio: ' + (passo.detalhe || '')];
+  if (t === 'SAGA_INICIADA') return ['o', 'int', 'Saga iniciada (' + (passo.detalhe || '') + ')'];
+  return null; // mudança de estado: tratada à parte
+}
+function escada(s){
+  const linhas = [];
+  for (const p of s.passos) {
+    const a = ator(p);
+    if (a) { linhas.push([p.em, a[0], a[1], a[2]]); if (p.tipo === 'SAGA_INICIADA') linhas.push([p.em, 'b', 'cmd', '→ GERAR_ORCAMENTO']); continue; }
+    linhas.push([p.em, 'o', 'int', '● ' + p.tipo + (p.detalhe ? ' – ' + p.detalhe : '')]);
+    const c = COMANDO[p.tipo];
+    if (c) linhas.push([p.em, c[0], 'cmd', '→ ' + c[1]]);
+  }
+  $('escada').innerHTML = linhas.map(([em, col, cls, txt]) => {
+    const cel = c => c === col ? '<span class="msg ' + cls + '">' + esc(txt) + '</span>' : '';
+    return '<tr><td class="hora">' + hora(em) + '</td><td>' + cel('o') + '</td><td>' + cel('b') + '</td><td>' + cel('x') + '</td></tr>';
+  }).join('');
+}
+
+async function carregarSaga(){
+  if (!token || !osSel) return;
+  try {
+    const r = await api('/api/ordens-servico/' + osSel + '/saga'); erro();
+    const s = Array.isArray(r) ? r[0] : r;   // a API devolve as Sagas da OS, a mais recente primeiro
+    if (!s) { $('resumo').textContent = 'Esta OS ainda não tem Saga.'; $('escada').innerHTML = ''; return; }
+    sagaSel = s;
+    s.passos = s.passos || [];
+    const vis = new Set(s.passos.map(p => p.tipo));
+    $('titulo').textContent = '· OS ' + s.osId;
+    $('feliz').innerHTML = linha(FELIZ, s, vis);
+    $('comp').innerHTML = linha(COMP, s, vis);
+    $('resumo').innerHTML = badge(s.estado) + ' <span class="mut">atualizada às ' + hora(s.atualizadaEm) + (s.prazo ? ' · prazo ' + hora(s.prazo) : '') + (s.tentativas ? ' · tentativas ' + s.tentativas : '') + '</span>'
+      + (s.motivo ? '<div>Motivo: ' + esc(s.motivo) + '</div>' : '')
+      + (s.pagamentoId ? '<div class="mut">pagamento: ' + esc(s.pagamentoId) + '</div>' : '')
+      + (s.linkPagamento ? '<div class="link">link: <a href="' + esc(s.linkPagamento) + '" target="_blank" rel="noopener">' + esc(s.linkPagamento) + '</a></div>' : '');
+    let ex = null;
+    if (s.estado === 'EM_EXECUCAO') { try { ex = await api(base('execution') + '/api/execucoes/' + s.osId); } catch (e) { ex = null; } }
+    botoes(s, ex);
+    escada(s);
+  } catch (x) { erro(x.message); }
+}
+
+// ------------------------------------------------------------------ demonstração
+const CENARIOS = {
+  feliz:      { metodo:'APRO', estoque:5, qtd:2, dica:'Aprove o orçamento: o pagamento é aprovado na hora, o estoque é reservado e a OS entra em execução. Depois use Iniciar e Finalizar execução.' },
+  link:       { metodo:'LINK', estoque:5, qtd:2, dica:'Aprove o orçamento: o Billing gera um link e a Saga espera o cliente (AGUARDANDO_PAGAMENTO). Use "Simular pagamento" para seguir ou "Simular link vencido" para ver a compensação A.' },
+  fund:       { metodo:'FUND', estoque:5, qtd:1, dica:'Aprove o orçamento: o pagamento é recusado por saldo insuficiente. A Saga cancela o orçamento (compensação A) e a OS volta ao diagnóstico. [Provedor simulado. Com o Mercado Pago ligado o método é ignorado e sai um link; uma recusa no cartão não encerra o link (o cliente pode tentar de novo): a compensação A só acontece quando o link vence.]' },
+  semestoque: { metodo:'APRO', estoque:1, qtd:3, dica:'Aprove o orçamento: o pagamento passa, mas o estoque (1) não cobre a peça (3). A Saga estorna o pagamento (compensação B) e cancela a OS.' },
+  falhaexec:  { metodo:'APRO', estoque:5, qtd:2, dica:'Aprove o orçamento e, com a OS em execução, clique em "Falhar execução": o estoque é devolvido e o pagamento estornado (compensação C).' },
+  erro:       { metodo:'ERRO', estoque:5, qtd:1, dica:'Aprove o orçamento: o provedor de pagamento está fora do ar, a mensagem é tentada de novo e vai para a fila de mortos (DLQ).' }
+};
+const sufixo = () => Date.now().toString().slice(-7);
+function cpfValido(){
+  const d = Array.from({length:9}, () => Math.floor(Math.random()*10));
+  if (d.every(x => x === d[0])) d[0] = (d[0] + 1) % 10;
+  for (const n of [10, 11]) {
+    let soma = 0; for (let i = 0; i < n - 1; i++) soma += d[i] * (n - i);
+    let r = (soma * 10) % 11; if (r === 10) r = 0; d.push(r);
+  }
+  return d.join('');
+}
+const post = (url, corpo) => api(url, { method:'POST', body: corpo === undefined ? undefined : JSON.stringify(corpo) });
+const base = id => $(id).value.replace(/\/$/, '');
+const cenarioAtual = () => CENARIOS[$('cenario').value];
+
+$('criarDemo').onclick = async () => {
+  if (!token) { erro('Entre primeiro.'); return; }
+  const c = cenarioAtual(), sx = sufixo(); erro(); $('criarDemo').disabled = true;
+  const passo = t => { $('demoMsg').textContent = t; };
+  try {
+    const L = () => String.fromCharCode(65 + Math.floor(Math.random()*26));
+    const cpf = cpfValido(), placa = L()+L()+L()+Math.floor(Math.random()*10)+L()+String(Math.floor(Math.random()*100)).padStart(2,'0');
+    passo('criando cliente e veículo...');
+    const cli = await post('/api/clientes', { nome:'Cliente Demo ' + sx, documento:cpf, email:'demo' + sx + '@x.com' });
+    await post('/api/veiculos', { placa, marca:'Honda', modelo:'Civic', ano:2020, clienteId:cli.id });
+    passo('criando serviço, peça e estoque...');
+    const srv = await post('/api/servicos', { nome:'Revisão ' + sx, preco:100.00, tempoEstimadoMinutos:60 });
+    const codigo = 'DEMO-' + sx;
+    const peca = await post('/api/pecas', { codigo, nome:'Peça demo', precoUnitario:50.00 });
+    await post(base('execution') + '/api/estoque', { codigo, nome:'Peça demo', quantidade:c.estoque });
+    passo('abrindo a OS e pedindo o orçamento...');
+    const os = await post('/api/ordens-servico', { documentoCliente:cpf, placaVeiculo:placa, descricaoProblema:'Demonstração',
+      servicos:[{ itemId:srv.id, quantidade:1 }], pecas:[{ itemId:peca.id, quantidade:c.qtd }] });
+    await post('/api/ordens-servico/' + os.id + '/diagnostico');
+    await post('/api/ordens-servico/' + os.id + '/orcamento');
+    passo('OS ' + os.id + ' criada; aguardando o orçamento do Billing.');
+    escolher(String(os.id));
+  } catch (x) { erro('Falha ao criar a demonstração: ' + x.message); passo(''); }
+  finally { $('criarDemo').disabled = false; }
+};
+$('cenario').onchange = () => { $('dica').style.display = 'none'; };
+
+async function acao(rotulo, fn){
+  try { erro(); await fn(); carregarSaga(); } catch (x) { erro(rotulo + ': ' + x.message); }
+}
+function botoes(s, ex){
+  const ac = $('acoes'); ac.innerHTML = '';
+  const b = (id, texto, cls) => { const e = document.createElement('button'); e.textContent = texto; if (cls) e.className = cls; e.id = id; ac.appendChild(e); return e; };
+  const os = '/api/ordens-servico/' + s.osId;
+  if (s.estado === 'AGUARDANDO_APROVACAO') {
+    b('bAprovar', 'Aprovar orçamento (' + cenarioAtual().metodo + ')', 'p').onclick = () => acao('Aprovar', () => post(os + '/orcamento/aprovacao', { metodoPagamento: cenarioAtual().metodo }));
+    b('bRecusar', 'Recusar orçamento', 'd').onclick = () => acao('Recusar', () => post(os + '/orcamento/recusa', { motivo:'Recusado na demonstração' }));
+    $('dica').style.display = 'block'; $('dica').textContent = cenarioAtual().dica;
+  }
+  if (s.estado === 'AGUARDANDO_PAGAMENTO' && s.pagamentoId) {
+    b('pagar', 'Simular pagamento', 'p').onclick = () => acao('Simulador', () => post(base('billing') + '/api/simulador/pagamentos/' + s.pagamentoId + '/aprovar'));
+    b('expirar', 'Simular link vencido', 'd').onclick = () => acao('Simulador', () => post(base('billing') + '/api/simulador/pagamentos/' + s.pagamentoId + '/expirar'));
+  }
+  if (s.estado === 'EM_EXECUCAO') {
+    const exUrl = base('execution') + '/api/execucoes/' + s.osId, st = ex && ex.status;
+    const info = document.createElement('span'); info.className = 'mut'; info.textContent = 'Execução: ' + (st || 'desconhecida'); ac.appendChild(info);
+    if (!st || st === 'NA_FILA') b('iniciar', 'Iniciar execução').onclick = () => acao('Iniciar', () => post(exUrl + '/iniciar'));
+    if (!st || st === 'EM_REPARO') b('finalizar', 'Finalizar execução', 'p').onclick = () => acao('Finalizar', () => post(exUrl + '/finalizar'));
+    b('falhar', 'Falhar execução', 'd').onclick = () => acao('Falhar', () => post(exUrl + '/falhar', { motivo:'Falha simulada na demonstração' }));
+  }
+}
+function iniciar(){
+  clearInterval(timer); clearInterval(timerLista);
+  carregarLista(); carregarSaga();
+  timer = setInterval(carregarSaga, 1000); timerLista = setInterval(carregarLista, 2000);
+}
+mostrar(); if (token) iniciar();
+</script>
+</body>
+</html>
