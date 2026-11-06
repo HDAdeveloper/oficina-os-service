@@ -82,6 +82,12 @@
             <groupId>software.amazon.awssdk</groupId>
             <artifactId>sts</artifactId>
         </dependency>
+        <!-- API do New Relic (so compilacao): sem o agente as chamadas nao fazem nada; com o agente viram eventos customizados -->
+        <dependency>
+            <groupId>com.newrelic.agent.java</groupId>
+            <artifactId>newrelic-api</artifactId>
+            <version>8.17.0</version>
+        </dependency>
         <!-- Migrações do banco (Flyway 10 exige o módulo específico do PostgreSQL) -->
         <dependency>
             <groupId>org.flywaydb</groupId>

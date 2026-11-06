@@ -3,6 +3,7 @@ package br.com.oficina.os.infrastructure.persistence;
 import br.com.oficina.os.application.port.out.SagaRepository;
 import br.com.oficina.os.domain.model.PassoSaga;
 import br.com.oficina.os.domain.model.Saga;
+import br.com.oficina.os.infrastructure.observabilidade.TelemetriaSaga;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Component;
 
@@ -37,11 +38,14 @@ public class SagaRepositoryAdapter implements SagaRepository {
         e.prazo = saga.getPrazo();
         e.criadaEm = saga.getCriadaEm();
         e.atualizadaEm = saga.getAtualizadaEm();
+        int jaRegistrados = e.passos.size();
         e.passos.clear();
         for (PassoSaga p : saga.getPassos()) {
             e.passos.add(new PassoEmb(p.em(), p.tipo(), p.detalhe()));
         }
-        return paraDominio(jpa.saveAndFlush(e));
+        Saga salva = paraDominio(jpa.saveAndFlush(e));
+        TelemetriaSaga.registrar(salva, jaRegistrados);
+        return salva;
     }
 
     @Override
