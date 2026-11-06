@@ -4,7 +4,7 @@ Clientes, veiculos, catalogo e ciclo da Ordem de Servico. Contem o **orquestrado
 
 - **Banco:** PostgreSQL (porta local 5433). Nenhum outro servico acessa esse banco.
 - **Porta:** 8080 (variavel `PORT`)
-- **API:** Swagger UI em `/swagger-ui.html`, contrato em `/v3/api-docs`, colecao Postman em `docs/postman`.
+- **API:** Swagger UI em `/swagger-ui.html`, contrato em `/v3/api-docs`, colecao Postman em `docs/postman` e contrato em `docs/openapi.json`.
 - **Autenticacao:** JWT (`Authorization: Bearer ...`); as rotas administrativas exigem papel `ADMIN`.
 
 ## Como rodar localmente
@@ -68,9 +68,11 @@ Configure no repositório (Settings -> Secrets and variables -> Actions):
 Agente Java do New Relic embutido na imagem. Fica desligado ate existir o segredo `newrelic` no cluster
 (`NEW_RELIC_LICENSE_KEY`). Health checks em `/actuator/health`, logs com `correlationId`.
 
-## Documentacao
+## API (Swagger / Postman)
 
-Arquitetura, ADRs, contrato de eventos e Saga: pasta `docs/`. Colecao Postman e Swagger: ver abaixo.
+- **Swagger UI** (com o serviço no ar): `/swagger-ui.html`; contrato vivo em `/v3/api-docs`.
+- **Contrato versionado:** [`docs/openapi.json`](docs/openapi.json) (gerado por `scripts/local/exportar-openapi.ps1` no workspace).
+- **Postman:** *Import → File* com o `docs/openapi.json` (cria a coleção com todas as rotas).
 
 ## Documentação
 
