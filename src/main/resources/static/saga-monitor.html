@@ -50,7 +50,7 @@
   <h1>Monitor da Saga <small class="mut">v5</small></h1>
   <span id="sessao" class="mut"></span>
   <form id="loginForm" style="display:none;gap:6px">
-    <input id="usr" placeholder="usuario" value="admin" size="9"><input id="pwd" type="password" placeholder="senha" value="admin123" size="9">
+    <input id="usr" aria-label="Usuário" placeholder="usuario" value="admin" size="9"><input id="pwd" aria-label="Senha" type="password" placeholder="senha" value="admin123" size="9">
     <button>Entrar</button>
   </form>
   <label class="mut">OS: <input id="osId" size="6" placeholder="id"></label>
@@ -211,8 +211,10 @@ const CENARIOS = {
   erro:       { metodo:'ERRO', estoque:5, qtd:1, dica:'Aprove o orçamento: o provedor de pagamento está fora do ar, a mensagem é tentada de novo e vai para a fila de mortos (DLQ).' }
 };
 const sufixo = () => Date.now().toString().slice(-7);
+// Dados de demonstração (CPF, placa); usa o gerador do navegador, que é criptográfico
+const sorteio = n => crypto.getRandomValues(new Uint32Array(1))[0] % n;
 function cpfValido(){
-  const d = Array.from({length:9}, () => Math.floor(Math.random()*10));
+  const d = Array.from({length:9}, () => sorteio(10));
   if (d.every(x => x === d[0])) d[0] = (d[0] + 1) % 10;
   for (const n of [10, 11]) {
     let soma = 0; for (let i = 0; i < n - 1; i++) soma += d[i] * (n - i);
@@ -229,8 +231,8 @@ $('criarDemo').onclick = async () => {
   const c = cenarioAtual(), sx = sufixo(); erro(); $('criarDemo').disabled = true;
   const passo = t => { $('demoMsg').textContent = t; };
   try {
-    const L = () => String.fromCharCode(65 + Math.floor(Math.random()*26));
-    const cpf = cpfValido(), placa = L()+L()+L()+Math.floor(Math.random()*10)+L()+String(Math.floor(Math.random()*100)).padStart(2,'0');
+    const L = () => String.fromCharCode(65 + sorteio(26));
+    const cpf = cpfValido(), placa = L()+L()+L()+sorteio(10)+L()+String(sorteio(100)).padStart(2,'0');
     passo('criando cliente e veículo...');
     const cli = await post('/api/clientes', { nome:'Cliente Demo ' + sx, documento:cpf, email:'demo' + sx + '@x.com' });
     await post('/api/veiculos', { placa, marca:'Honda', modelo:'Civic', ano:2020, clienteId:cli.id });
