@@ -1,0 +1,1989 @@
+{
+    "openapi":  "3.0.1",
+    "info":  {
+                 "title":  "OS Service â Oficina MecÃ¢nica",
+                 "description":  "Clientes, veÃ­culos, catÃ¡logo de serviÃ§os e peÃ§as, ciclo de vida da Ordem de ServiÃ§o e orquestraÃ§Ã£o da Saga. FaÃ§a login em /api/auth/login e use o token em \"Authorize\".",
+                 "version":  "1.0.0"
+             },
+    "servers":  [
+                    {
+                        "url":  "http://localhost:8081",
+                        "description":  "Generated server url"
+                    }
+                ],
+    "security":  [
+                     {
+                         "bearerAuth":  [
+
+                                        ]
+                     }
+                 ],
+    "paths":  {
+                  "/api/veiculos/{id}":  {
+                                             "get":  {
+                                                         "tags":  [
+                                                                      "VeÃ­culos"
+                                                                  ],
+                                                         "summary":  "Busca um veÃ­culo pelo id",
+                                                         "operationId":  "buscar",
+                                                         "parameters":  [
+                                                                            {
+                                                                                "name":  "id",
+                                                                                "in":  "path",
+                                                                                "required":  true,
+                                                                                "schema":  {
+                                                                                               "type":  "integer",
+                                                                                               "format":  "int64"
+                                                                                           }
+                                                                            }
+                                                                        ],
+                                                         "responses":  {
+                                                                           "200":  {
+                                                                                       "description":  "OK",
+                                                                                       "content":  {
+                                                                                                       "*/*":  {
+                                                                                                                   "schema":  {
+                                                                                                                                  "$ref":  "#/components/schemas/VeiculoResponse"
+                                                                                                                              }
+                                                                                                               }
+                                                                                                   }
+                                                                                   }
+                                                                       }
+                                                     },
+                                             "put":  {
+                                                         "tags":  [
+                                                                      "VeÃ­culos"
+                                                                  ],
+                                                         "summary":  "Atualiza marca, modelo e ano (a placa e o dono nÃ£o mudam)",
+                                                         "operationId":  "atualizar",
+                                                         "parameters":  [
+                                                                            {
+                                                                                "name":  "id",
+                                                                                "in":  "path",
+                                                                                "required":  true,
+                                                                                "schema":  {
+                                                                                               "type":  "integer",
+                                                                                               "format":  "int64"
+                                                                                           }
+                                                                            }
+                                                                        ],
+                                                         "requestBody":  {
+                                                                             "content":  {
+                                                                                             "application/json":  {
+                                                                                                                      "schema":  {
+                                                                                                                                     "$ref":  "#/components/schemas/VeiculoAtualizacaoRequest"
+                                                                                                                                 }
+                                                                                                                  }
+                                                                                         },
+                                                                             "required":  true
+                                                                         },
+                                                         "responses":  {
+                                                                           "200":  {
+                                                                                       "description":  "OK",
+                                                                                       "content":  {
+                                                                                                       "*/*":  {
+                                                                                                                   "schema":  {
+                                                                                                                                  "$ref":  "#/components/schemas/VeiculoResponse"
+                                                                                                                              }
+                                                                                                               }
+                                                                                                   }
+                                                                                   }
+                                                                       }
+                                                     },
+                                             "delete":  {
+                                                            "tags":  [
+                                                                         "VeÃ­culos"
+                                                                     ],
+                                                            "summary":  "Desativa o veÃ­culo",
+                                                            "operationId":  "desativar",
+                                                            "parameters":  [
+                                                                               {
+                                                                                   "name":  "id",
+                                                                                   "in":  "path",
+                                                                                   "required":  true,
+                                                                                   "schema":  {
+                                                                                                  "type":  "integer",
+                                                                                                  "format":  "int64"
+                                                                                              }
+                                                                               }
+                                                                           ],
+                                                            "responses":  {
+                                                                              "200":  {
+                                                                                          "description":  "OK"
+                                                                                      }
+                                                                          }
+                                                        }
+                                         },
+                  "/api/servicos/{id}":  {
+                                             "get":  {
+                                                         "tags":  [
+                                                                      "ServiÃ§os (catÃ¡logo)"
+                                                                  ],
+                                                         "summary":  "Busca um serviÃ§o pelo id",
+                                                         "operationId":  "buscar_1",
+                                                         "parameters":  [
+                                                                            {
+                                                                                "name":  "id",
+                                                                                "in":  "path",
+                                                                                "required":  true,
+                                                                                "schema":  {
+                                                                                               "type":  "integer",
+                                                                                               "format":  "int64"
+                                                                                           }
+                                                                            }
+                                                                        ],
+                                                         "responses":  {
+                                                                           "200":  {
+                                                                                       "description":  "OK",
+                                                                                       "content":  {
+                                                                                                       "*/*":  {
+                                                                                                                   "schema":  {
+                                                                                                                                  "$ref":  "#/components/schemas/ServicoResponse"
+                                                                                                                              }
+                                                                                                               }
+                                                                                                   }
+                                                                                   }
+                                                                       }
+                                                     },
+                                             "put":  {
+                                                         "tags":  [
+                                                                      "ServiÃ§os (catÃ¡logo)"
+                                                                  ],
+                                                         "summary":  "Atualiza um serviÃ§o (OS jÃ¡ abertas mantÃªm o preÃ§o da Ã©poca)",
+                                                         "operationId":  "atualizar_1",
+                                                         "parameters":  [
+                                                                            {
+                                                                                "name":  "id",
+                                                                                "in":  "path",
+                                                                                "required":  true,
+                                                                                "schema":  {
+                                                                                               "type":  "integer",
+                                                                                               "format":  "int64"
+                                                                                           }
+                                                                            }
+                                                                        ],
+                                                         "requestBody":  {
+                                                                             "content":  {
+                                                                                             "application/json":  {
+                                                                                                                      "schema":  {
+                                                                                                                                     "$ref":  "#/components/schemas/ServicoRequest"
+                                                                                                                                 }
+                                                                                                                  }
+                                                                                         },
+                                                                             "required":  true
+                                                                         },
+                                                         "responses":  {
+                                                                           "200":  {
+                                                                                       "description":  "OK",
+                                                                                       "content":  {
+                                                                                                       "*/*":  {
+                                                                                                                   "schema":  {
+                                                                                                                                  "$ref":  "#/components/schemas/ServicoResponse"
+                                                                                                                              }
+                                                                                                               }
+                                                                                                   }
+                                                                                   }
+                                                                       }
+                                                     },
+                                             "delete":  {
+                                                            "tags":  [
+                                                                         "ServiÃ§os (catÃ¡logo)"
+                                                                     ],
+                                                            "summary":  "Desativa o serviÃ§o",
+                                                            "operationId":  "desativar_1",
+                                                            "parameters":  [
+                                                                               {
+                                                                                   "name":  "id",
+                                                                                   "in":  "path",
+                                                                                   "required":  true,
+                                                                                   "schema":  {
+                                                                                                  "type":  "integer",
+                                                                                                  "format":  "int64"
+                                                                                              }
+                                                                               }
+                                                                           ],
+                                                            "responses":  {
+                                                                              "200":  {
+                                                                                          "description":  "OK"
+                                                                                      }
+                                                                          }
+                                                        }
+                                         },
+                  "/api/pecas/{id}":  {
+                                          "get":  {
+                                                      "tags":  [
+                                                                   "PeÃ§as (catÃ¡logo)"
+                                                               ],
+                                                      "summary":  "Busca uma peÃ§a pelo id",
+                                                      "operationId":  "buscar_2",
+                                                      "parameters":  [
+                                                                         {
+                                                                             "name":  "id",
+                                                                             "in":  "path",
+                                                                             "required":  true,
+                                                                             "schema":  {
+                                                                                            "type":  "integer",
+                                                                                            "format":  "int64"
+                                                                                        }
+                                                                         }
+                                                                     ],
+                                                      "responses":  {
+                                                                        "200":  {
+                                                                                    "description":  "OK",
+                                                                                    "content":  {
+                                                                                                    "*/*":  {
+                                                                                                                "schema":  {
+                                                                                                                               "$ref":  "#/components/schemas/PecaResponse"
+                                                                                                                           }
+                                                                                                            }
+                                                                                                }
+                                                                                }
+                                                                    }
+                                                  },
+                                          "put":  {
+                                                      "tags":  [
+                                                                   "PeÃ§as (catÃ¡logo)"
+                                                               ],
+                                                      "summary":  "Atualiza nome, descriÃ§Ã£o e preÃ§o (o cÃ³digo nÃ£o muda)",
+                                                      "operationId":  "atualizar_2",
+                                                      "parameters":  [
+                                                                         {
+                                                                             "name":  "id",
+                                                                             "in":  "path",
+                                                                             "required":  true,
+                                                                             "schema":  {
+                                                                                            "type":  "integer",
+                                                                                            "format":  "int64"
+                                                                                        }
+                                                                         }
+                                                                     ],
+                                                      "requestBody":  {
+                                                                          "content":  {
+                                                                                          "application/json":  {
+                                                                                                                   "schema":  {
+                                                                                                                                  "$ref":  "#/components/schemas/PecaAtualizacaoRequest"
+                                                                                                                              }
+                                                                                                               }
+                                                                                      },
+                                                                          "required":  true
+                                                                      },
+                                                      "responses":  {
+                                                                        "200":  {
+                                                                                    "description":  "OK",
+                                                                                    "content":  {
+                                                                                                    "*/*":  {
+                                                                                                                "schema":  {
+                                                                                                                               "$ref":  "#/components/schemas/PecaResponse"
+                                                                                                                           }
+                                                                                                            }
+                                                                                                }
+                                                                                }
+                                                                    }
+                                                  },
+                                          "delete":  {
+                                                         "tags":  [
+                                                                      "PeÃ§as (catÃ¡logo)"
+                                                                  ],
+                                                         "summary":  "Desativa a peÃ§a",
+                                                         "operationId":  "desativar_2",
+                                                         "parameters":  [
+                                                                            {
+                                                                                "name":  "id",
+                                                                                "in":  "path",
+                                                                                "required":  true,
+                                                                                "schema":  {
+                                                                                               "type":  "integer",
+                                                                                               "format":  "int64"
+                                                                                           }
+                                                                            }
+                                                                        ],
+                                                         "responses":  {
+                                                                           "200":  {
+                                                                                       "description":  "OK"
+                                                                                   }
+                                                                       }
+                                                     }
+                                      },
+                  "/api/clientes/{id}":  {
+                                             "get":  {
+                                                         "tags":  [
+                                                                      "Clientes"
+                                                                  ],
+                                                         "summary":  "Busca um cliente pelo id (que Ã© o CPF/CNPJ, com ou sem pontuaÃ§Ã£o)",
+                                                         "operationId":  "buscar_3",
+                                                         "parameters":  [
+                                                                            {
+                                                                                "name":  "id",
+                                                                                "in":  "path",
+                                                                                "required":  true,
+                                                                                "schema":  {
+                                                                                               "type":  "string"
+                                                                                           }
+                                                                            }
+                                                                        ],
+                                                         "responses":  {
+                                                                           "200":  {
+                                                                                       "description":  "OK",
+                                                                                       "content":  {
+                                                                                                       "*/*":  {
+                                                                                                                   "schema":  {
+                                                                                                                                  "$ref":  "#/components/schemas/ClienteResponse"
+                                                                                                                              }
+                                                                                                               }
+                                                                                                   }
+                                                                                   }
+                                                                       }
+                                                     },
+                                             "put":  {
+                                                         "tags":  [
+                                                                      "Clientes"
+                                                                  ],
+                                                         "summary":  "Atualiza os dados de contato do cliente (o documento nÃ£o muda)",
+                                                         "operationId":  "atualizar_3",
+                                                         "parameters":  [
+                                                                            {
+                                                                                "name":  "id",
+                                                                                "in":  "path",
+                                                                                "required":  true,
+                                                                                "schema":  {
+                                                                                               "type":  "string"
+                                                                                           }
+                                                                            }
+                                                                        ],
+                                                         "requestBody":  {
+                                                                             "content":  {
+                                                                                             "application/json":  {
+                                                                                                                      "schema":  {
+                                                                                                                                     "$ref":  "#/components/schemas/ClienteAtualizacaoRequest"
+                                                                                                                                 }
+                                                                                                                  }
+                                                                                         },
+                                                                             "required":  true
+                                                                         },
+                                                         "responses":  {
+                                                                           "200":  {
+                                                                                       "description":  "OK",
+                                                                                       "content":  {
+                                                                                                       "*/*":  {
+                                                                                                                   "schema":  {
+                                                                                                                                  "$ref":  "#/components/schemas/ClienteResponse"
+                                                                                                                              }
+                                                                                                               }
+                                                                                                   }
+                                                                                   }
+                                                                       }
+                                                     },
+                                             "delete":  {
+                                                            "tags":  [
+                                                                         "Clientes"
+                                                                     ],
+                                                            "summary":  "Desativa o cliente (o histÃ³rico Ã© preservado)",
+                                                            "operationId":  "desativar_3",
+                                                            "parameters":  [
+                                                                               {
+                                                                                   "name":  "id",
+                                                                                   "in":  "path",
+                                                                                   "required":  true,
+                                                                                   "schema":  {
+                                                                                                  "type":  "string"
+                                                                                              }
+                                                                               }
+                                                                           ],
+                                                            "responses":  {
+                                                                              "200":  {
+                                                                                          "description":  "OK"
+                                                                                      }
+                                                                          }
+                                                        }
+                                         },
+                  "/api/veiculos":  {
+                                        "get":  {
+                                                    "tags":  [
+                                                                 "VeÃ­culos"
+                                                             ],
+                                                    "summary":  "Lista os veÃ­culos ativos, ou os de um cliente se clienteId for informado",
+                                                    "operationId":  "listar",
+                                                    "parameters":  [
+                                                                       {
+                                                                           "name":  "clienteId",
+                                                                           "in":  "query",
+                                                                           "required":  false,
+                                                                           "schema":  {
+                                                                                          "type":  "string"
+                                                                                      }
+                                                                       }
+                                                                   ],
+                                                    "responses":  {
+                                                                      "200":  {
+                                                                                  "description":  "OK",
+                                                                                  "content":  {
+                                                                                                  "*/*":  {
+                                                                                                              "schema":  {
+                                                                                                                             "type":  "array",
+                                                                                                                             "items":  {
+                                                                                                                                           "$ref":  "#/components/schemas/VeiculoResponse"
+                                                                                                                                       }
+                                                                                                                         }
+                                                                                                          }
+                                                                                              }
+                                                                              }
+                                                                  }
+                                                },
+                                        "post":  {
+                                                     "tags":  [
+                                                                  "VeÃ­culos"
+                                                              ],
+                                                     "summary":  "Cadastra um veÃ­culo de um cliente (placa antiga ou Mercosul)",
+                                                     "operationId":  "cadastrar",
+                                                     "requestBody":  {
+                                                                         "content":  {
+                                                                                         "application/json":  {
+                                                                                                                  "schema":  {
+                                                                                                                                 "$ref":  "#/components/schemas/VeiculoRequest"
+                                                                                                                             }
+                                                                                                              }
+                                                                                     },
+                                                                         "required":  true
+                                                                     },
+                                                     "responses":  {
+                                                                       "200":  {
+                                                                                   "description":  "OK",
+                                                                                   "content":  {
+                                                                                                   "*/*":  {
+                                                                                                               "schema":  {
+                                                                                                                              "$ref":  "#/components/schemas/VeiculoResponse"
+                                                                                                                          }
+                                                                                                           }
+                                                                                               }
+                                                                               }
+                                                                   }
+                                                 }
+                                    },
+                  "/api/servicos":  {
+                                        "get":  {
+                                                    "tags":  [
+                                                                 "ServiÃ§os (catÃ¡logo)"
+                                                             ],
+                                                    "summary":  "Lista os serviÃ§os ativos",
+                                                    "operationId":  "listar_1",
+                                                    "responses":  {
+                                                                      "200":  {
+                                                                                  "description":  "OK",
+                                                                                  "content":  {
+                                                                                                  "*/*":  {
+                                                                                                              "schema":  {
+                                                                                                                             "type":  "array",
+                                                                                                                             "items":  {
+                                                                                                                                           "$ref":  "#/components/schemas/ServicoResponse"
+                                                                                                                                       }
+                                                                                                                         }
+                                                                                                          }
+                                                                                              }
+                                                                              }
+                                                                  }
+                                                },
+                                        "post":  {
+                                                     "tags":  [
+                                                                  "ServiÃ§os (catÃ¡logo)"
+                                                              ],
+                                                     "summary":  "Cadastra um serviÃ§o no catÃ¡logo (nome e preÃ§o)",
+                                                     "operationId":  "cadastrar_1",
+                                                     "requestBody":  {
+                                                                         "content":  {
+                                                                                         "application/json":  {
+                                                                                                                  "schema":  {
+                                                                                                                                 "$ref":  "#/components/schemas/ServicoRequest"
+                                                                                                                             }
+                                                                                                              }
+                                                                                     },
+                                                                         "required":  true
+                                                                     },
+                                                     "responses":  {
+                                                                       "200":  {
+                                                                                   "description":  "OK",
+                                                                                   "content":  {
+                                                                                                   "*/*":  {
+                                                                                                               "schema":  {
+                                                                                                                              "$ref":  "#/components/schemas/ServicoResponse"
+                                                                                                                          }
+                                                                                                           }
+                                                                                               }
+                                                                               }
+                                                                   }
+                                                 }
+                                    },
+                  "/api/pecas":  {
+                                     "get":  {
+                                                 "tags":  [
+                                                              "PeÃ§as (catÃ¡logo)"
+                                                          ],
+                                                 "summary":  "Lista as peÃ§as ativas",
+                                                 "operationId":  "listar_2",
+                                                 "responses":  {
+                                                                   "200":  {
+                                                                               "description":  "OK",
+                                                                               "content":  {
+                                                                                               "*/*":  {
+                                                                                                           "schema":  {
+                                                                                                                          "type":  "array",
+                                                                                                                          "items":  {
+                                                                                                                                        "$ref":  "#/components/schemas/PecaResponse"
+                                                                                                                                    }
+                                                                                                                      }
+                                                                                                       }
+                                                                                           }
+                                                                           }
+                                                               }
+                                             },
+                                     "post":  {
+                                                  "tags":  [
+                                                               "PeÃ§as (catÃ¡logo)"
+                                                           ],
+                                                  "summary":  "Cadastra uma peÃ§a no catÃ¡logo (cÃ³digo Ãºnico e preÃ§o; a quantidade em estoque fica no Execution Service)",
+                                                  "operationId":  "cadastrar_2",
+                                                  "requestBody":  {
+                                                                      "content":  {
+                                                                                      "application/json":  {
+                                                                                                               "schema":  {
+                                                                                                                              "$ref":  "#/components/schemas/PecaRequest"
+                                                                                                                          }
+                                                                                                           }
+                                                                                  },
+                                                                      "required":  true
+                                                                  },
+                                                  "responses":  {
+                                                                    "200":  {
+                                                                                "description":  "OK",
+                                                                                "content":  {
+                                                                                                "*/*":  {
+                                                                                                            "schema":  {
+                                                                                                                           "$ref":  "#/components/schemas/PecaResponse"
+                                                                                                                       }
+                                                                                                        }
+                                                                                            }
+                                                                            }
+                                                                }
+                                              }
+                                 },
+                  "/api/ordens-servico":  {
+                                              "get":  {
+                                                          "tags":  [
+                                                                       "Ordens de ServiÃ§o"
+                                                                   ],
+                                                          "summary":  "Lista as OS em andamento (mais prioritÃ¡rias e antigas primeiro) ou filtra por status",
+                                                          "operationId":  "listar_3",
+                                                          "parameters":  [
+                                                                             {
+                                                                                 "name":  "status",
+                                                                                 "in":  "query",
+                                                                                 "required":  false,
+                                                                                 "schema":  {
+                                                                                                "type":  "string",
+                                                                                                "enum":  [
+                                                                                                             "RECEBIDA",
+                                                                                                             "EM_DIAGNOSTICO",
+                                                                                                             "AGUARDANDO_APROVACAO",
+                                                                                                             "EM_EXECUCAO",
+                                                                                                             "FINALIZADA",
+                                                                                                             "ENTREGUE",
+                                                                                                             "CANCELADA"
+                                                                                                         ]
+                                                                                            }
+                                                                             }
+                                                                         ],
+                                                          "responses":  {
+                                                                            "200":  {
+                                                                                        "description":  "OK",
+                                                                                        "content":  {
+                                                                                                        "*/*":  {
+                                                                                                                    "schema":  {
+                                                                                                                                   "type":  "array",
+                                                                                                                                   "items":  {
+                                                                                                                                                 "$ref":  "#/components/schemas/OrdemServicoResponse"
+                                                                                                                                             }
+                                                                                                                               }
+                                                                                                                }
+                                                                                                    }
+                                                                                    }
+                                                                        }
+                                                      },
+                                              "post":  {
+                                                           "tags":  [
+                                                                        "Ordens de ServiÃ§o"
+                                                                    ],
+                                                           "summary":  "Abre uma OS para um cliente (CPF/CNPJ) e um veÃ­culo (placa), com serviÃ§os e peÃ§as opcionais",
+                                                           "operationId":  "abrir",
+                                                           "requestBody":  {
+                                                                               "content":  {
+                                                                                               "application/json":  {
+                                                                                                                        "schema":  {
+                                                                                                                                       "$ref":  "#/components/schemas/AberturaOSRequest"
+                                                                                                                                   }
+                                                                                                                    }
+                                                                                           },
+                                                                               "required":  true
+                                                                           },
+                                                           "responses":  {
+                                                                             "200":  {
+                                                                                         "description":  "OK",
+                                                                                         "content":  {
+                                                                                                         "*/*":  {
+                                                                                                                     "schema":  {
+                                                                                                                                    "$ref":  "#/components/schemas/OrdemServicoResponse"
+                                                                                                                                }
+                                                                                                                 }
+                                                                                                     }
+                                                                                     }
+                                                                         }
+                                                       }
+                                          },
+                  "/api/ordens-servico/{id}/servicos":  {
+                                                            "post":  {
+                                                                         "tags":  [
+                                                                                      "Ordens de ServiÃ§o"
+                                                                                  ],
+                                                                         "summary":  "Adiciona um serviÃ§o do catÃ¡logo Ã  OS (antes do orÃ§amento)",
+                                                                         "operationId":  "adicionarServico",
+                                                                         "parameters":  [
+                                                                                            {
+                                                                                                "name":  "id",
+                                                                                                "in":  "path",
+                                                                                                "required":  true,
+                                                                                                "schema":  {
+                                                                                                               "type":  "integer",
+                                                                                                               "format":  "int64"
+                                                                                                           }
+                                                                                            }
+                                                                                        ],
+                                                                         "requestBody":  {
+                                                                                             "content":  {
+                                                                                                             "application/json":  {
+                                                                                                                                      "schema":  {
+                                                                                                                                                     "$ref":  "#/components/schemas/ItemOSRequest"
+                                                                                                                                                 }
+                                                                                                                                  }
+                                                                                                         },
+                                                                                             "required":  true
+                                                                                         },
+                                                                         "responses":  {
+                                                                                           "201":  {
+                                                                                                       "description":  "Created",
+                                                                                                       "content":  {
+                                                                                                                       "*/*":  {
+                                                                                                                                   "schema":  {
+                                                                                                                                                  "$ref":  "#/components/schemas/OrdemServicoResponse"
+                                                                                                                                              }
+                                                                                                                               }
+                                                                                                                   }
+                                                                                                   }
+                                                                                       }
+                                                                     }
+                                                        },
+                  "/api/ordens-servico/{id}/pecas":  {
+                                                         "post":  {
+                                                                      "tags":  [
+                                                                                   "Ordens de ServiÃ§o"
+                                                                               ],
+                                                                      "summary":  "Adiciona uma peÃ§a do catÃ¡logo Ã  OS (antes do orÃ§amento)",
+                                                                      "operationId":  "adicionarPeca",
+                                                                      "parameters":  [
+                                                                                         {
+                                                                                             "name":  "id",
+                                                                                             "in":  "path",
+                                                                                             "required":  true,
+                                                                                             "schema":  {
+                                                                                                            "type":  "integer",
+                                                                                                            "format":  "int64"
+                                                                                                        }
+                                                                                         }
+                                                                                     ],
+                                                                      "requestBody":  {
+                                                                                          "content":  {
+                                                                                                          "application/json":  {
+                                                                                                                                   "schema":  {
+                                                                                                                                                  "$ref":  "#/components/schemas/ItemOSRequest"
+                                                                                                                                              }
+                                                                                                                               }
+                                                                                                      },
+                                                                                          "required":  true
+                                                                                      },
+                                                                      "responses":  {
+                                                                                        "201":  {
+                                                                                                    "description":  "Created",
+                                                                                                    "content":  {
+                                                                                                                    "*/*":  {
+                                                                                                                                "schema":  {
+                                                                                                                                               "$ref":  "#/components/schemas/OrdemServicoResponse"
+                                                                                                                                           }
+                                                                                                                            }
+                                                                                                                }
+                                                                                                }
+                                                                                    }
+                                                                  }
+                                                     },
+                  "/api/ordens-servico/{id}/orcamento":  {
+                                                             "post":  {
+                                                                          "tags":  [
+                                                                                       "Ordens de ServiÃ§o"
+                                                                                   ],
+                                                                          "summary":  "Pede o orÃ§amento ao Billing (assÃ­ncrono: o status muda quando o Billing responde)",
+                                                                          "operationId":  "solicitarOrcamento",
+                                                                          "parameters":  [
+                                                                                             {
+                                                                                                 "name":  "id",
+                                                                                                 "in":  "path",
+                                                                                                 "required":  true,
+                                                                                                 "schema":  {
+                                                                                                                "type":  "integer",
+                                                                                                                "format":  "int64"
+                                                                                                            }
+                                                                                             }
+                                                                                         ],
+                                                                          "responses":  {
+                                                                                            "202":  {
+                                                                                                        "description":  "Accepted",
+                                                                                                        "content":  {
+                                                                                                                        "*/*":  {
+                                                                                                                                    "schema":  {
+                                                                                                                                                   "$ref":  "#/components/schemas/OrdemServicoResponse"
+                                                                                                                                               }
+                                                                                                                                }
+                                                                                                                    }
+                                                                                                    }
+                                                                                        }
+                                                                      }
+                                                         },
+                  "/api/ordens-servico/{id}/orcamento/recusa":  {
+                                                                    "post":  {
+                                                                                 "tags":  [
+                                                                                              "Ordens de ServiÃ§o"
+                                                                                          ],
+                                                                                 "summary":  "Cliente recusa o orÃ§amento: a OS volta ao diagnÃ³stico e o orÃ§amento Ã© cancelado",
+                                                                                 "operationId":  "recusarOrcamento",
+                                                                                 "parameters":  [
+                                                                                                    {
+                                                                                                        "name":  "id",
+                                                                                                        "in":  "path",
+                                                                                                        "required":  true,
+                                                                                                        "schema":  {
+                                                                                                                       "type":  "integer",
+                                                                                                                       "format":  "int64"
+                                                                                                                   }
+                                                                                                    }
+                                                                                                ],
+                                                                                 "requestBody":  {
+                                                                                                     "content":  {
+                                                                                                                     "application/json":  {
+                                                                                                                                              "schema":  {
+                                                                                                                                                             "$ref":  "#/components/schemas/MotivoRequest"
+                                                                                                                                                         }
+                                                                                                                                          }
+                                                                                                                 }
+                                                                                                 },
+                                                                                 "responses":  {
+                                                                                                   "200":  {
+                                                                                                               "description":  "OK",
+                                                                                                               "content":  {
+                                                                                                                               "*/*":  {
+                                                                                                                                           "schema":  {
+                                                                                                                                                          "$ref":  "#/components/schemas/OrdemServicoResponse"
+                                                                                                                                                      }
+                                                                                                                                       }
+                                                                                                                           }
+                                                                                                           }
+                                                                                               }
+                                                                             }
+                                                                },
+                  "/api/ordens-servico/{id}/orcamento/aprovacao":  {
+                                                                       "post":  {
+                                                                                    "tags":  [
+                                                                                                 "Ordens de ServiÃ§o"
+                                                                                             ],
+                                                                                    "summary":  "Cliente aprova o orÃ§amento: dispara a Saga (pagamento e reserva de estoque)",
+                                                                                    "description":  "Corpo opcional com metodoPagamento. No provedor simulado: APRO aprova, FUND/OTHE recusam, ERRO simula provedor fora do ar. Acompanhe o andamento em GET /{id}/saga.",
+                                                                                    "operationId":  "aprovarOrcamento",
+                                                                                    "parameters":  [
+                                                                                                       {
+                                                                                                           "name":  "id",
+                                                                                                           "in":  "path",
+                                                                                                           "required":  true,
+                                                                                                           "schema":  {
+                                                                                                                          "type":  "integer",
+                                                                                                                          "format":  "int64"
+                                                                                                                      }
+                                                                                                       }
+                                                                                                   ],
+                                                                                    "requestBody":  {
+                                                                                                        "content":  {
+                                                                                                                        "application/json":  {
+                                                                                                                                                 "schema":  {
+                                                                                                                                                                "$ref":  "#/components/schemas/AprovacaoRequest"
+                                                                                                                                                            }
+                                                                                                                                             }
+                                                                                                                    }
+                                                                                                    },
+                                                                                    "responses":  {
+                                                                                                      "202":  {
+                                                                                                                  "description":  "Accepted",
+                                                                                                                  "content":  {
+                                                                                                                                  "*/*":  {
+                                                                                                                                              "schema":  {
+                                                                                                                                                             "$ref":  "#/components/schemas/OrdemServicoResponse"
+                                                                                                                                                         }
+                                                                                                                                          }
+                                                                                                                              }
+                                                                                                              }
+                                                                                                  }
+                                                                                }
+                                                                   },
+                  "/api/ordens-servico/{id}/entrega":  {
+                                                           "post":  {
+                                                                        "tags":  [
+                                                                                     "Ordens de ServiÃ§o"
+                                                                                 ],
+                                                                        "summary":  "Registra a entrega do veÃ­culo (FINALIZADA â ENTREGUE)",
+                                                                        "operationId":  "entregar",
+                                                                        "parameters":  [
+                                                                                           {
+                                                                                               "name":  "id",
+                                                                                               "in":  "path",
+                                                                                               "required":  true,
+                                                                                               "schema":  {
+                                                                                                              "type":  "integer",
+                                                                                                              "format":  "int64"
+                                                                                                          }
+                                                                                           }
+                                                                                       ],
+                                                                        "responses":  {
+                                                                                          "200":  {
+                                                                                                      "description":  "OK",
+                                                                                                      "content":  {
+                                                                                                                      "*/*":  {
+                                                                                                                                  "schema":  {
+                                                                                                                                                 "$ref":  "#/components/schemas/OrdemServicoResponse"
+                                                                                                                                             }
+                                                                                                                              }
+                                                                                                                  }
+                                                                                                  }
+                                                                                      }
+                                                                    }
+                                                       },
+                  "/api/ordens-servico/{id}/diagnostico":  {
+                                                               "post":  {
+                                                                            "tags":  [
+                                                                                         "Ordens de ServiÃ§o"
+                                                                                     ],
+                                                                            "summary":  "Inicia o diagnÃ³stico (RECEBIDA â EM_DIAGNOSTICO)",
+                                                                            "operationId":  "iniciarDiagnostico",
+                                                                            "parameters":  [
+                                                                                               {
+                                                                                                   "name":  "id",
+                                                                                                   "in":  "path",
+                                                                                                   "required":  true,
+                                                                                                   "schema":  {
+                                                                                                                  "type":  "integer",
+                                                                                                                  "format":  "int64"
+                                                                                                              }
+                                                                                               }
+                                                                                           ],
+                                                                            "responses":  {
+                                                                                              "200":  {
+                                                                                                          "description":  "OK",
+                                                                                                          "content":  {
+                                                                                                                          "*/*":  {
+                                                                                                                                      "schema":  {
+                                                                                                                                                     "$ref":  "#/components/schemas/OrdemServicoResponse"
+                                                                                                                                                 }
+                                                                                                                                  }
+                                                                                                                      }
+                                                                                                      }
+                                                                                          }
+                                                                        }
+                                                           },
+                  "/api/ordens-servico/{id}/cancelamento":  {
+                                                                "post":  {
+                                                                             "tags":  [
+                                                                                          "Ordens de ServiÃ§o"
+                                                                                      ],
+                                                                             "summary":  "Cancela a OS (sÃ³ com a OS Recebida ou Em DiagnÃ³stico)",
+                                                                             "operationId":  "cancelar",
+                                                                             "parameters":  [
+                                                                                                {
+                                                                                                    "name":  "id",
+                                                                                                    "in":  "path",
+                                                                                                    "required":  true,
+                                                                                                    "schema":  {
+                                                                                                                   "type":  "integer",
+                                                                                                                   "format":  "int64"
+                                                                                                               }
+                                                                                                }
+                                                                                            ],
+                                                                             "requestBody":  {
+                                                                                                 "content":  {
+                                                                                                                 "application/json":  {
+                                                                                                                                          "schema":  {
+                                                                                                                                                         "$ref":  "#/components/schemas/MotivoRequest"
+                                                                                                                                                     }
+                                                                                                                                      }
+                                                                                                             }
+                                                                                             },
+                                                                             "responses":  {
+                                                                                               "200":  {
+                                                                                                           "description":  "OK",
+                                                                                                           "content":  {
+                                                                                                                           "*/*":  {
+                                                                                                                                       "schema":  {
+                                                                                                                                                      "$ref":  "#/components/schemas/OrdemServicoResponse"
+                                                                                                                                                  }
+                                                                                                                                   }
+                                                                                                                       }
+                                                                                                       }
+                                                                                           }
+                                                                         }
+                                                            },
+                  "/api/clientes":  {
+                                        "get":  {
+                                                    "tags":  [
+                                                                 "Clientes"
+                                                             ],
+                                                    "summary":  "Lista os clientes ativos",
+                                                    "operationId":  "listar_4",
+                                                    "responses":  {
+                                                                      "200":  {
+                                                                                  "description":  "OK",
+                                                                                  "content":  {
+                                                                                                  "*/*":  {
+                                                                                                              "schema":  {
+                                                                                                                             "type":  "array",
+                                                                                                                             "items":  {
+                                                                                                                                           "$ref":  "#/components/schemas/ClienteResponse"
+                                                                                                                                       }
+                                                                                                                         }
+                                                                                                          }
+                                                                                              }
+                                                                              }
+                                                                  }
+                                                },
+                                        "post":  {
+                                                     "tags":  [
+                                                                  "Clientes"
+                                                              ],
+                                                     "summary":  "Cadastra um cliente (CPF ou CNPJ, com ou sem pontuaÃ§Ã£o)",
+                                                     "operationId":  "cadastrar_3",
+                                                     "requestBody":  {
+                                                                         "content":  {
+                                                                                         "application/json":  {
+                                                                                                                  "schema":  {
+                                                                                                                                 "$ref":  "#/components/schemas/ClienteRequest"
+                                                                                                                             }
+                                                                                                              }
+                                                                                     },
+                                                                         "required":  true
+                                                                     },
+                                                     "responses":  {
+                                                                       "200":  {
+                                                                                   "description":  "OK",
+                                                                                   "content":  {
+                                                                                                   "*/*":  {
+                                                                                                               "schema":  {
+                                                                                                                              "$ref":  "#/components/schemas/ClienteResponse"
+                                                                                                                          }
+                                                                                                           }
+                                                                                               }
+                                                                               }
+                                                                   }
+                                                 }
+                                    },
+                  "/api/clientes/{id}/reativacao":  {
+                                                        "post":  {
+                                                                     "tags":  [
+                                                                                  "Clientes"
+                                                                              ],
+                                                                     "summary":  "Reativa um cliente desativado (o id Ã© o CPF/CNPJ)",
+                                                                     "operationId":  "reativar",
+                                                                     "parameters":  [
+                                                                                        {
+                                                                                            "name":  "id",
+                                                                                            "in":  "path",
+                                                                                            "required":  true,
+                                                                                            "schema":  {
+                                                                                                           "type":  "string"
+                                                                                                       }
+                                                                                        }
+                                                                                    ],
+                                                                     "responses":  {
+                                                                                       "200":  {
+                                                                                                   "description":  "OK",
+                                                                                                   "content":  {
+                                                                                                                   "*/*":  {
+                                                                                                                               "schema":  {
+                                                                                                                                              "$ref":  "#/components/schemas/ClienteResponse"
+                                                                                                                                          }
+                                                                                                                           }
+                                                                                                               }
+                                                                                               }
+                                                                                   }
+                                                                 }
+                                                    },
+                  "/api/auth/login":  {
+                                          "post":  {
+                                                       "tags":  [
+                                                                    "AutenticaÃ§Ã£o"
+                                                                ],
+                                                       "summary":  "Autentica o administrador e devolve um token JWT (Bearer)",
+                                                       "operationId":  "login",
+                                                       "requestBody":  {
+                                                                           "content":  {
+                                                                                           "application/json":  {
+                                                                                                                    "schema":  {
+                                                                                                                                   "$ref":  "#/components/schemas/LoginRequest"
+                                                                                                                               }
+                                                                                                                }
+                                                                                       },
+                                                                           "required":  true
+                                                                       },
+                                                       "responses":  {
+                                                                         "200":  {
+                                                                                     "description":  "OK",
+                                                                                     "content":  {
+                                                                                                     "*/*":  {
+                                                                                                                 "schema":  {
+                                                                                                                                "$ref":  "#/components/schemas/TokenResponse"
+                                                                                                                            }
+                                                                                                             }
+                                                                                                 }
+                                                                                 }
+                                                                     },
+                                                       "security":  [
+
+                                                                    ]
+                                                   }
+                                      },
+                  "/api/veiculos/placa/{placa}":  {
+                                                      "get":  {
+                                                                  "tags":  [
+                                                                               "VeÃ­culos"
+                                                                           ],
+                                                                  "summary":  "Busca um veÃ­culo pela placa",
+                                                                  "operationId":  "buscarPorPlaca",
+                                                                  "parameters":  [
+                                                                                     {
+                                                                                         "name":  "placa",
+                                                                                         "in":  "path",
+                                                                                         "required":  true,
+                                                                                         "schema":  {
+                                                                                                        "type":  "string"
+                                                                                                    }
+                                                                                     }
+                                                                                 ],
+                                                                  "responses":  {
+                                                                                    "200":  {
+                                                                                                "description":  "OK",
+                                                                                                "content":  {
+                                                                                                                "*/*":  {
+                                                                                                                            "schema":  {
+                                                                                                                                           "$ref":  "#/components/schemas/VeiculoResponse"
+                                                                                                                                       }
+                                                                                                                        }
+                                                                                                            }
+                                                                                            }
+                                                                                }
+                                                              }
+                                                  },
+                  "/api/sagas":  {
+                                     "get":  {
+                                                 "tags":  [
+                                                              "Sagas (acompanhamento)"
+                                                          ],
+                                                 "summary":  "Ãltimas Sagas de todas as OS (mexidas hÃ¡ menos tempo primeiro)",
+                                                 "description":  "limite padrÃ£o 30, mÃ¡ximo 100. Cada item traz o estado, o link de pagamento e o diÃ¡rio.",
+                                                 "operationId":  "recentes",
+                                                 "parameters":  [
+                                                                    {
+                                                                        "name":  "limite",
+                                                                        "in":  "query",
+                                                                        "required":  false,
+                                                                        "schema":  {
+                                                                                       "type":  "integer",
+                                                                                       "format":  "int32",
+                                                                                       "default":  30
+                                                                                   }
+                                                                    }
+                                                                ],
+                                                 "responses":  {
+                                                                   "200":  {
+                                                                               "description":  "OK",
+                                                                               "content":  {
+                                                                                               "*/*":  {
+                                                                                                           "schema":  {
+                                                                                                                          "type":  "array",
+                                                                                                                          "items":  {
+                                                                                                                                        "$ref":  "#/components/schemas/SagaResponse"
+                                                                                                                                    }
+                                                                                                                      }
+                                                                                                       }
+                                                                                           }
+                                                                           }
+                                                               }
+                                             }
+                                 },
+                  "/api/pecas/codigo/{codigo}":  {
+                                                     "get":  {
+                                                                 "tags":  [
+                                                                              "PeÃ§as (catÃ¡logo)"
+                                                                          ],
+                                                                 "summary":  "Busca uma peÃ§a pelo cÃ³digo",
+                                                                 "operationId":  "buscarPorCodigo",
+                                                                 "parameters":  [
+                                                                                    {
+                                                                                        "name":  "codigo",
+                                                                                        "in":  "path",
+                                                                                        "required":  true,
+                                                                                        "schema":  {
+                                                                                                       "type":  "string"
+                                                                                                   }
+                                                                                    }
+                                                                                ],
+                                                                 "responses":  {
+                                                                                   "200":  {
+                                                                                               "description":  "OK",
+                                                                                               "content":  {
+                                                                                                               "*/*":  {
+                                                                                                                           "schema":  {
+                                                                                                                                          "$ref":  "#/components/schemas/PecaResponse"
+                                                                                                                                      }
+                                                                                                                       }
+                                                                                                           }
+                                                                                           }
+                                                                               }
+                                                             }
+                                                 },
+                  "/api/ordens-servico/{id}":  {
+                                                   "get":  {
+                                                               "tags":  [
+                                                                            "Ordens de ServiÃ§o"
+                                                                        ],
+                                                               "summary":  "Busca uma OS completa pelo id",
+                                                               "operationId":  "buscar_4",
+                                                               "parameters":  [
+                                                                                  {
+                                                                                      "name":  "id",
+                                                                                      "in":  "path",
+                                                                                      "required":  true,
+                                                                                      "schema":  {
+                                                                                                     "type":  "integer",
+                                                                                                     "format":  "int64"
+                                                                                                 }
+                                                                                  }
+                                                                              ],
+                                                               "responses":  {
+                                                                                 "200":  {
+                                                                                             "description":  "OK",
+                                                                                             "content":  {
+                                                                                                             "*/*":  {
+                                                                                                                         "schema":  {
+                                                                                                                                        "$ref":  "#/components/schemas/OrdemServicoResponse"
+                                                                                                                                    }
+                                                                                                                     }
+                                                                                                         }
+                                                                                         }
+                                                                             }
+                                                           }
+                                               },
+                  "/api/ordens-servico/{id}/status":  {
+                                                          "get":  {
+                                                                      "tags":  [
+                                                                                   "Ordens de ServiÃ§o"
+                                                                               ],
+                                                                      "summary":  "Consulta sÃ³ o status da OS",
+                                                                      "operationId":  "status",
+                                                                      "parameters":  [
+                                                                                         {
+                                                                                             "name":  "id",
+                                                                                             "in":  "path",
+                                                                                             "required":  true,
+                                                                                             "schema":  {
+                                                                                                            "type":  "integer",
+                                                                                                            "format":  "int64"
+                                                                                                        }
+                                                                                         }
+                                                                                     ],
+                                                                      "responses":  {
+                                                                                        "200":  {
+                                                                                                    "description":  "OK",
+                                                                                                    "content":  {
+                                                                                                                    "*/*":  {
+                                                                                                                                "schema":  {
+                                                                                                                                               "$ref":  "#/components/schemas/StatusResponse"
+                                                                                                                                           }
+                                                                                                                            }
+                                                                                                                }
+                                                                                                }
+                                                                                    }
+                                                                  }
+                                                      },
+                  "/api/ordens-servico/{id}/saga":  {
+                                                        "get":  {
+                                                                    "tags":  [
+                                                                                 "Ordens de ServiÃ§o"
+                                                                             ],
+                                                                    "summary":  "DiÃ¡rio da Saga da OS (comandos, eventos e compensaÃ§Ãµes), a mais recente primeiro",
+                                                                    "operationId":  "saga",
+                                                                    "parameters":  [
+                                                                                       {
+                                                                                           "name":  "id",
+                                                                                           "in":  "path",
+                                                                                           "required":  true,
+                                                                                           "schema":  {
+                                                                                                          "type":  "integer",
+                                                                                                          "format":  "int64"
+                                                                                                      }
+                                                                                       }
+                                                                                   ],
+                                                                    "responses":  {
+                                                                                      "200":  {
+                                                                                                  "description":  "OK",
+                                                                                                  "content":  {
+                                                                                                                  "*/*":  {
+                                                                                                                              "schema":  {
+                                                                                                                                             "type":  "array",
+                                                                                                                                             "items":  {
+                                                                                                                                                           "$ref":  "#/components/schemas/SagaResponse"
+                                                                                                                                                       }
+                                                                                                                                         }
+                                                                                                                          }
+                                                                                                              }
+                                                                                              }
+                                                                                  }
+                                                                }
+                                                    },
+                  "/api/ordens-servico/{id}/historico":  {
+                                                             "get":  {
+                                                                         "tags":  [
+                                                                                      "Ordens de ServiÃ§o"
+                                                                                  ],
+                                                                         "summary":  "HistÃ³rico de mudanÃ§as de status da OS",
+                                                                         "operationId":  "historico",
+                                                                         "parameters":  [
+                                                                                            {
+                                                                                                "name":  "id",
+                                                                                                "in":  "path",
+                                                                                                "required":  true,
+                                                                                                "schema":  {
+                                                                                                               "type":  "integer",
+                                                                                                               "format":  "int64"
+                                                                                                           }
+                                                                                            }
+                                                                                        ],
+                                                                         "responses":  {
+                                                                                           "200":  {
+                                                                                                       "description":  "OK",
+                                                                                                       "content":  {
+                                                                                                                       "*/*":  {
+                                                                                                                                   "schema":  {
+                                                                                                                                                  "type":  "array",
+                                                                                                                                                  "items":  {
+                                                                                                                                                                "$ref":  "#/components/schemas/HistoricoResponse"
+                                                                                                                                                            }
+                                                                                                                                              }
+                                                                                                                               }
+                                                                                                                   }
+                                                                                                   }
+                                                                                       }
+                                                                     }
+                                                         },
+                  "/api/minhas-ordens":  {
+                                             "get":  {
+                                                         "tags":  [
+                                                                      "Ãrea do cliente"
+                                                                  ],
+                                                         "summary":  "Ordens de serviÃ§o do cliente autenticado por CPF (acompanhamento do status)",
+                                                         "operationId":  "minhasOrdens",
+                                                         "responses":  {
+                                                                           "200":  {
+                                                                                       "description":  "OK",
+                                                                                       "content":  {
+                                                                                                       "*/*":  {
+                                                                                                                   "schema":  {
+                                                                                                                                  "type":  "array",
+                                                                                                                                  "items":  {
+                                                                                                                                                "$ref":  "#/components/schemas/OrdemServicoResponse"
+                                                                                                                                            }
+                                                                                                                              }
+                                                                                                               }
+                                                                                                   }
+                                                                                   }
+                                                                       }
+                                                     }
+                                         },
+                  "/api/clientes/documento/{documento}":  {
+                                                              "get":  {
+                                                                          "tags":  [
+                                                                                       "Clientes"
+                                                                                   ],
+                                                                          "summary":  "Busca um cliente pelo CPF/CNPJ",
+                                                                          "operationId":  "buscarPorDocumento",
+                                                                          "parameters":  [
+                                                                                             {
+                                                                                                 "name":  "documento",
+                                                                                                 "in":  "path",
+                                                                                                 "required":  true,
+                                                                                                 "schema":  {
+                                                                                                                "type":  "string"
+                                                                                                            }
+                                                                                             }
+                                                                                         ],
+                                                                          "responses":  {
+                                                                                            "200":  {
+                                                                                                        "description":  "OK",
+                                                                                                        "content":  {
+                                                                                                                        "*/*":  {
+                                                                                                                                    "schema":  {
+                                                                                                                                                   "$ref":  "#/components/schemas/ClienteResponse"
+                                                                                                                                               }
+                                                                                                                                }
+                                                                                                                    }
+                                                                                                    }
+                                                                                        }
+                                                                      }
+                                                          }
+              },
+    "components":  {
+                       "schemas":  {
+                                       "VeiculoAtualizacaoRequest":  {
+                                                                         "required":  [
+                                                                                          "marca",
+                                                                                          "modelo"
+                                                                                      ],
+                                                                         "type":  "object",
+                                                                         "properties":  {
+                                                                                            "marca":  {
+                                                                                                          "maxLength":  80,
+                                                                                                          "minLength":  0,
+                                                                                                          "type":  "string"
+                                                                                                      },
+                                                                                            "modelo":  {
+                                                                                                           "maxLength":  80,
+                                                                                                           "minLength":  0,
+                                                                                                           "type":  "string"
+                                                                                                       },
+                                                                                            "ano":  {
+                                                                                                        "type":  "integer",
+                                                                                                        "format":  "int32"
+                                                                                                    }
+                                                                                        }
+                                                                     },
+                                       "VeiculoResponse":  {
+                                                               "type":  "object",
+                                                               "properties":  {
+                                                                                  "id":  {
+                                                                                             "type":  "integer",
+                                                                                             "format":  "int64"
+                                                                                         },
+                                                                                  "placa":  {
+                                                                                                "type":  "string"
+                                                                                            },
+                                                                                  "marca":  {
+                                                                                                "type":  "string"
+                                                                                            },
+                                                                                  "modelo":  {
+                                                                                                 "type":  "string"
+                                                                                             },
+                                                                                  "ano":  {
+                                                                                              "type":  "integer",
+                                                                                              "format":  "int32"
+                                                                                          },
+                                                                                  "clienteId":  {
+                                                                                                    "type":  "string"
+                                                                                                },
+                                                                                  "ativo":  {
+                                                                                                "type":  "boolean"
+                                                                                            }
+                                                                              }
+                                                           },
+                                       "ServicoRequest":  {
+                                                              "required":  [
+                                                                               "nome",
+                                                                               "preco"
+                                                                           ],
+                                                              "type":  "object",
+                                                              "properties":  {
+                                                                                 "nome":  {
+                                                                                              "maxLength":  150,
+                                                                                              "minLength":  0,
+                                                                                              "type":  "string"
+                                                                                          },
+                                                                                 "descricao":  {
+                                                                                                   "maxLength":  500,
+                                                                                                   "minLength":  0,
+                                                                                                   "type":  "string"
+                                                                                               },
+                                                                                 "preco":  {
+                                                                                               "type":  "number"
+                                                                                           },
+                                                                                 "tempoEstimadoMinutos":  {
+                                                                                                              "type":  "integer",
+                                                                                                              "format":  "int32"
+                                                                                                          }
+                                                                             }
+                                                          },
+                                       "ServicoResponse":  {
+                                                               "type":  "object",
+                                                               "properties":  {
+                                                                                  "id":  {
+                                                                                             "type":  "integer",
+                                                                                             "format":  "int64"
+                                                                                         },
+                                                                                  "nome":  {
+                                                                                               "type":  "string"
+                                                                                           },
+                                                                                  "descricao":  {
+                                                                                                    "type":  "string"
+                                                                                                },
+                                                                                  "preco":  {
+                                                                                                "type":  "number"
+                                                                                            },
+                                                                                  "tempoEstimadoMinutos":  {
+                                                                                                               "type":  "integer",
+                                                                                                               "format":  "int32"
+                                                                                                           },
+                                                                                  "ativo":  {
+                                                                                                "type":  "boolean"
+                                                                                            }
+                                                                              }
+                                                           },
+                                       "PecaAtualizacaoRequest":  {
+                                                                      "required":  [
+                                                                                       "nome",
+                                                                                       "precoUnitario"
+                                                                                   ],
+                                                                      "type":  "object",
+                                                                      "properties":  {
+                                                                                         "nome":  {
+                                                                                                      "maxLength":  150,
+                                                                                                      "minLength":  0,
+                                                                                                      "type":  "string"
+                                                                                                  },
+                                                                                         "descricao":  {
+                                                                                                           "maxLength":  500,
+                                                                                                           "minLength":  0,
+                                                                                                           "type":  "string"
+                                                                                                       },
+                                                                                         "precoUnitario":  {
+                                                                                                               "type":  "number"
+                                                                                                           }
+                                                                                     }
+                                                                  },
+                                       "PecaResponse":  {
+                                                            "type":  "object",
+                                                            "properties":  {
+                                                                               "id":  {
+                                                                                          "type":  "integer",
+                                                                                          "format":  "int64"
+                                                                                      },
+                                                                               "codigo":  {
+                                                                                              "type":  "string"
+                                                                                          },
+                                                                               "nome":  {
+                                                                                            "type":  "string"
+                                                                                        },
+                                                                               "descricao":  {
+                                                                                                 "type":  "string"
+                                                                                             },
+                                                                               "precoUnitario":  {
+                                                                                                     "type":  "number"
+                                                                                                 },
+                                                                               "ativo":  {
+                                                                                             "type":  "boolean"
+                                                                                         }
+                                                                           }
+                                                        },
+                                       "ClienteAtualizacaoRequest":  {
+                                                                         "required":  [
+                                                                                          "nome"
+                                                                                      ],
+                                                                         "type":  "object",
+                                                                         "properties":  {
+                                                                                            "nome":  {
+                                                                                                         "maxLength":  150,
+                                                                                                         "minLength":  0,
+                                                                                                         "type":  "string"
+                                                                                                     },
+                                                                                            "email":  {
+                                                                                                          "maxLength":  150,
+                                                                                                          "minLength":  0,
+                                                                                                          "type":  "string"
+                                                                                                      },
+                                                                                            "telefone":  {
+                                                                                                             "maxLength":  30,
+                                                                                                             "minLength":  0,
+                                                                                                             "type":  "string"
+                                                                                                         },
+                                                                                            "endereco":  {
+                                                                                                             "maxLength":  255,
+                                                                                                             "minLength":  0,
+                                                                                                             "type":  "string"
+                                                                                                         }
+                                                                                        }
+                                                                     },
+                                       "ClienteResponse":  {
+                                                               "type":  "object",
+                                                               "properties":  {
+                                                                                  "id":  {
+                                                                                             "type":  "string"
+                                                                                         },
+                                                                                  "nome":  {
+                                                                                               "type":  "string"
+                                                                                           },
+                                                                                  "documento":  {
+                                                                                                    "type":  "string"
+                                                                                                },
+                                                                                  "tipoDocumento":  {
+                                                                                                        "type":  "string"
+                                                                                                    },
+                                                                                  "email":  {
+                                                                                                "type":  "string"
+                                                                                            },
+                                                                                  "telefone":  {
+                                                                                                   "type":  "string"
+                                                                                               },
+                                                                                  "endereco":  {
+                                                                                                   "type":  "string"
+                                                                                               },
+                                                                                  "ativo":  {
+                                                                                                "type":  "boolean"
+                                                                                            }
+                                                                              }
+                                                           },
+                                       "VeiculoRequest":  {
+                                                              "required":  [
+                                                                               "clienteId",
+                                                                               "marca",
+                                                                               "modelo",
+                                                                               "placa"
+                                                                           ],
+                                                              "type":  "object",
+                                                              "properties":  {
+                                                                                 "placa":  {
+                                                                                               "maxLength":  8,
+                                                                                               "minLength":  0,
+                                                                                               "type":  "string"
+                                                                                           },
+                                                                                 "marca":  {
+                                                                                               "maxLength":  80,
+                                                                                               "minLength":  0,
+                                                                                               "type":  "string"
+                                                                                           },
+                                                                                 "modelo":  {
+                                                                                                "maxLength":  80,
+                                                                                                "minLength":  0,
+                                                                                                "type":  "string"
+                                                                                            },
+                                                                                 "ano":  {
+                                                                                             "type":  "integer",
+                                                                                             "format":  "int32"
+                                                                                         },
+                                                                                 "clienteId":  {
+                                                                                                   "maxLength":  18,
+                                                                                                   "minLength":  0,
+                                                                                                   "type":  "string"
+                                                                                               }
+                                                                             }
+                                                          },
+                                       "PecaRequest":  {
+                                                           "required":  [
+                                                                            "codigo",
+                                                                            "nome",
+                                                                            "precoUnitario"
+                                                                        ],
+                                                           "type":  "object",
+                                                           "properties":  {
+                                                                              "codigo":  {
+                                                                                             "maxLength":  40,
+                                                                                             "minLength":  0,
+                                                                                             "type":  "string"
+                                                                                         },
+                                                                              "nome":  {
+                                                                                           "maxLength":  150,
+                                                                                           "minLength":  0,
+                                                                                           "type":  "string"
+                                                                                       },
+                                                                              "descricao":  {
+                                                                                                "maxLength":  500,
+                                                                                                "minLength":  0,
+                                                                                                "type":  "string"
+                                                                                            },
+                                                                              "precoUnitario":  {
+                                                                                                    "type":  "number"
+                                                                                                }
+                                                                          }
+                                                       },
+                                       "AberturaOSRequest":  {
+                                                                 "required":  [
+                                                                                  "descricaoProblema",
+                                                                                  "documentoCliente",
+                                                                                  "placaVeiculo"
+                                                                              ],
+                                                                 "type":  "object",
+                                                                 "properties":  {
+                                                                                    "documentoCliente":  {
+                                                                                                             "maxLength":  18,
+                                                                                                             "minLength":  0,
+                                                                                                             "type":  "string"
+                                                                                                         },
+                                                                                    "placaVeiculo":  {
+                                                                                                         "maxLength":  8,
+                                                                                                         "minLength":  0,
+                                                                                                         "type":  "string"
+                                                                                                     },
+                                                                                    "descricaoProblema":  {
+                                                                                                              "maxLength":  1000,
+                                                                                                              "minLength":  0,
+                                                                                                              "type":  "string"
+                                                                                                          },
+                                                                                    "observacoes":  {
+                                                                                                        "maxLength":  1000,
+                                                                                                        "minLength":  0,
+                                                                                                        "type":  "string"
+                                                                                                    },
+                                                                                    "servicos":  {
+                                                                                                     "type":  "array",
+                                                                                                     "items":  {
+                                                                                                                   "$ref":  "#/components/schemas/ItemOSRequest"
+                                                                                                               }
+                                                                                                 },
+                                                                                    "pecas":  {
+                                                                                                  "type":  "array",
+                                                                                                  "items":  {
+                                                                                                                "$ref":  "#/components/schemas/ItemOSRequest"
+                                                                                                            }
+                                                                                              }
+                                                                                }
+                                                             },
+                                       "ItemOSRequest":  {
+                                                             "required":  [
+                                                                              "itemId"
+                                                                          ],
+                                                             "type":  "object",
+                                                             "properties":  {
+                                                                                "itemId":  {
+                                                                                               "type":  "integer",
+                                                                                               "format":  "int64"
+                                                                                           },
+                                                                                "quantidade":  {
+                                                                                                   "type":  "integer",
+                                                                                                   "format":  "int32"
+                                                                                               }
+                                                                            }
+                                                         },
+                                       "ItemPeca":  {
+                                                        "type":  "object",
+                                                        "properties":  {
+                                                                           "pecaId":  {
+                                                                                          "type":  "integer",
+                                                                                          "format":  "int64"
+                                                                                      },
+                                                                           "codigo":  {
+                                                                                          "type":  "string"
+                                                                                      },
+                                                                           "nome":  {
+                                                                                        "type":  "string"
+                                                                                    },
+                                                                           "quantidade":  {
+                                                                                              "type":  "integer",
+                                                                                              "format":  "int32"
+                                                                                          },
+                                                                           "precoUnitario":  {
+                                                                                                 "type":  "number"
+                                                                                             },
+                                                                           "subtotal":  {
+                                                                                            "type":  "number"
+                                                                                        }
+                                                                       }
+                                                    },
+                                       "ItemServico":  {
+                                                           "type":  "object",
+                                                           "properties":  {
+                                                                              "servicoId":  {
+                                                                                                "type":  "integer",
+                                                                                                "format":  "int64"
+                                                                                            },
+                                                                              "nome":  {
+                                                                                           "type":  "string"
+                                                                                       },
+                                                                              "quantidade":  {
+                                                                                                 "type":  "integer",
+                                                                                                 "format":  "int32"
+                                                                                             },
+                                                                              "precoUnitario":  {
+                                                                                                    "type":  "number"
+                                                                                                },
+                                                                              "subtotal":  {
+                                                                                               "type":  "number"
+                                                                                           }
+                                                                          }
+                                                       },
+                                       "OrdemServicoResponse":  {
+                                                                    "type":  "object",
+                                                                    "properties":  {
+                                                                                       "id":  {
+                                                                                                  "type":  "integer",
+                                                                                                  "format":  "int64"
+                                                                                              },
+                                                                                       "numero":  {
+                                                                                                      "type":  "string"
+                                                                                                  },
+                                                                                       "status":  {
+                                                                                                      "type":  "string"
+                                                                                                  },
+                                                                                       "statusDescricao":  {
+                                                                                                               "type":  "string"
+                                                                                                           },
+                                                                                       "clienteId":  {
+                                                                                                         "type":  "string"
+                                                                                                     },
+                                                                                       "veiculoId":  {
+                                                                                                         "type":  "integer",
+                                                                                                         "format":  "int64"
+                                                                                                     },
+                                                                                       "descricaoProblema":  {
+                                                                                                                 "type":  "string"
+                                                                                                             },
+                                                                                       "observacoes":  {
+                                                                                                           "type":  "string"
+                                                                                                       },
+                                                                                       "orcamentoId":  {
+                                                                                                           "type":  "string"
+                                                                                                       },
+                                                                                       "motivoCancelamento":  {
+                                                                                                                  "type":  "string"
+                                                                                                              },
+                                                                                       "servicos":  {
+                                                                                                        "type":  "array",
+                                                                                                        "items":  {
+                                                                                                                      "$ref":  "#/components/schemas/ItemServico"
+                                                                                                                  }
+                                                                                                    },
+                                                                                       "pecas":  {
+                                                                                                     "type":  "array",
+                                                                                                     "items":  {
+                                                                                                                   "$ref":  "#/components/schemas/ItemPeca"
+                                                                                                               }
+                                                                                                 },
+                                                                                       "valorTotal":  {
+                                                                                                          "type":  "number"
+                                                                                                      },
+                                                                                       "dataAbertura":  {
+                                                                                                            "type":  "string",
+                                                                                                            "format":  "date-time"
+                                                                                                        },
+                                                                                       "dataInicio":  {
+                                                                                                          "type":  "string",
+                                                                                                          "format":  "date-time"
+                                                                                                      },
+                                                                                       "dataFinalizacao":  {
+                                                                                                               "type":  "string",
+                                                                                                               "format":  "date-time"
+                                                                                                           },
+                                                                                       "dataEntrega":  {
+                                                                                                           "type":  "string",
+                                                                                                           "format":  "date-time"
+                                                                                                       }
+                                                                                   }
+                                                                },
+                                       "MotivoRequest":  {
+                                                             "type":  "object",
+                                                             "properties":  {
+                                                                                "motivo":  {
+                                                                                               "maxLength":  500,
+                                                                                               "minLength":  0,
+                                                                                               "type":  "string"
+                                                                                           }
+                                                                            }
+                                                         },
+                                       "AprovacaoRequest":  {
+                                                                "type":  "object",
+                                                                "properties":  {
+                                                                                   "metodoPagamento":  {
+                                                                                                           "maxLength":  40,
+                                                                                                           "minLength":  0,
+                                                                                                           "type":  "string"
+                                                                                                       }
+                                                                               }
+                                                            },
+                                       "ClienteRequest":  {
+                                                              "required":  [
+                                                                               "documento",
+                                                                               "nome"
+                                                                           ],
+                                                              "type":  "object",
+                                                              "properties":  {
+                                                                                 "nome":  {
+                                                                                              "maxLength":  150,
+                                                                                              "minLength":  0,
+                                                                                              "type":  "string"
+                                                                                          },
+                                                                                 "documento":  {
+                                                                                                   "maxLength":  18,
+                                                                                                   "minLength":  0,
+                                                                                                   "type":  "string"
+                                                                                               },
+                                                                                 "email":  {
+                                                                                               "maxLength":  150,
+                                                                                               "minLength":  0,
+                                                                                               "type":  "string"
+                                                                                           },
+                                                                                 "telefone":  {
+                                                                                                  "maxLength":  30,
+                                                                                                  "minLength":  0,
+                                                                                                  "type":  "string"
+                                                                                              },
+                                                                                 "endereco":  {
+                                                                                                  "maxLength":  255,
+                                                                                                  "minLength":  0,
+                                                                                                  "type":  "string"
+                                                                                              }
+                                                                             }
+                                                          },
+                                       "LoginRequest":  {
+                                                            "required":  [
+                                                                             "senha",
+                                                                             "usuario"
+                                                                         ],
+                                                            "type":  "object",
+                                                            "properties":  {
+                                                                               "usuario":  {
+                                                                                               "type":  "string"
+                                                                                           },
+                                                                               "senha":  {
+                                                                                             "type":  "string"
+                                                                                         }
+                                                                           }
+                                                        },
+                                       "TokenResponse":  {
+                                                             "type":  "object",
+                                                             "properties":  {
+                                                                                "token":  {
+                                                                                              "type":  "string"
+                                                                                          },
+                                                                                "tipo":  {
+                                                                                             "type":  "string"
+                                                                                         },
+                                                                                "expiraEmSegundos":  {
+                                                                                                         "type":  "integer",
+                                                                                                         "format":  "int64"
+                                                                                                     }
+                                                                            }
+                                                         },
+                                       "Passo":  {
+                                                     "type":  "object",
+                                                     "properties":  {
+                                                                        "em":  {
+                                                                                   "type":  "string",
+                                                                                   "format":  "date-time"
+                                                                               },
+                                                                        "tipo":  {
+                                                                                     "type":  "string"
+                                                                                 },
+                                                                        "detalhe":  {
+                                                                                        "type":  "string"
+                                                                                    }
+                                                                    }
+                                                 },
+                                       "SagaResponse":  {
+                                                            "type":  "object",
+                                                            "properties":  {
+                                                                               "id":  {
+                                                                                          "type":  "string"
+                                                                                      },
+                                                                               "osId":  {
+                                                                                            "type":  "integer",
+                                                                                            "format":  "int64"
+                                                                                        },
+                                                                               "correlationId":  {
+                                                                                                     "type":  "string"
+                                                                                                 },
+                                                                               "estado":  {
+                                                                                              "type":  "string"
+                                                                                          },
+                                                                               "orcamentoId":  {
+                                                                                                   "type":  "string"
+                                                                                               },
+                                                                               "valorTotal":  {
+                                                                                                  "type":  "number"
+                                                                                              },
+                                                                               "pagamentoId":  {
+                                                                                                   "type":  "string"
+                                                                                               },
+                                                                               "linkPagamento":  {
+                                                                                                     "type":  "string"
+                                                                                                 },
+                                                                               "reservaId":  {
+                                                                                                 "type":  "string"
+                                                                                             },
+                                                                               "motivo":  {
+                                                                                              "type":  "string"
+                                                                                          },
+                                                                               "tentativas":  {
+                                                                                                  "type":  "integer",
+                                                                                                  "format":  "int32"
+                                                                                              },
+                                                                               "prazo":  {
+                                                                                             "type":  "string",
+                                                                                             "format":  "date-time"
+                                                                                         },
+                                                                               "criadaEm":  {
+                                                                                                "type":  "string",
+                                                                                                "format":  "date-time"
+                                                                                            },
+                                                                               "atualizadaEm":  {
+                                                                                                    "type":  "string",
+                                                                                                    "format":  "date-time"
+                                                                                                },
+                                                                               "passos":  {
+                                                                                              "type":  "array",
+                                                                                              "items":  {
+                                                                                                            "$ref":  "#/components/schemas/Passo"
+                                                                                                        }
+                                                                                          }
+                                                                           }
+                                                        },
+                                       "StatusResponse":  {
+                                                              "type":  "object",
+                                                              "properties":  {
+                                                                                 "status":  {
+                                                                                                "type":  "string"
+                                                                                            },
+                                                                                 "descricao":  {
+                                                                                                   "type":  "string"
+                                                                                               }
+                                                                             }
+                                                          },
+                                       "HistoricoResponse":  {
+                                                                 "type":  "object",
+                                                                 "properties":  {
+                                                                                    "de":  {
+                                                                                               "type":  "string"
+                                                                                           },
+                                                                                    "para":  {
+                                                                                                 "type":  "string"
+                                                                                             },
+                                                                                    "em":  {
+                                                                                               "type":  "string",
+                                                                                               "format":  "date-time"
+                                                                                           },
+                                                                                    "motivo":  {
+                                                                                                   "type":  "string"
+                                                                                               }
+                                                                                }
+                                                             }
+                                   },
+                       "securitySchemes":  {
+                                               "bearerAuth":  {
+                                                                  "type":  "http",
+                                                                  "scheme":  "bearer",
+                                                                  "bearerFormat":  "JWT"
+                                                              }
+                                           }
+                   }
+}
