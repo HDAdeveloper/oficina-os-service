@@ -1,8 +1,8 @@
 {
     "openapi":  "3.0.1",
     "info":  {
-                 "title":  "OS Service â Oficina MecÃ¢nica",
-                 "description":  "Clientes, veÃ­culos, catÃ¡logo de serviÃ§os e peÃ§as, ciclo de vida da Ordem de ServiÃ§o e orquestraÃ§Ã£o da Saga. FaÃ§a login em /api/auth/login e use o token em \"Authorize\".",
+                 "title":  "OS Service — Oficina Tech Service",
+                 "description":  "Clientes, veículos, catálogo de serviços e peças, ciclo de vida da Ordem de Serviço e orquestração da Saga. Faça login em /api/auth/login e use o token em \"Authorize\".",
                  "version":  "1.0.0"
              },
     "servers":  [
@@ -22,9 +22,9 @@
                   "/api/veiculos/{id}":  {
                                              "get":  {
                                                          "tags":  [
-                                                                      "VeÃ­culos"
+                                                                      "Veículos"
                                                                   ],
-                                                         "summary":  "Busca um veÃ­culo pelo id",
+                                                         "summary":  "Busca um veículo pelo id",
                                                          "operationId":  "buscar",
                                                          "parameters":  [
                                                                             {
@@ -52,9 +52,9 @@
                                                      },
                                              "put":  {
                                                          "tags":  [
-                                                                      "VeÃ­culos"
+                                                                      "Veículos"
                                                                   ],
-                                                         "summary":  "Atualiza marca, modelo e ano (a placa e o dono nÃ£o mudam)",
+                                                         "summary":  "Atualiza marca, modelo e ano (a placa e o dono não mudam)",
                                                          "operationId":  "atualizar",
                                                          "parameters":  [
                                                                             {
@@ -92,9 +92,9 @@
                                                      },
                                              "delete":  {
                                                             "tags":  [
-                                                                         "VeÃ­culos"
+                                                                         "Veículos"
                                                                      ],
-                                                            "summary":  "Desativa o veÃ­culo",
+                                                            "summary":  "Desativa o veículo",
                                                             "operationId":  "desativar",
                                                             "parameters":  [
                                                                                {
@@ -117,9 +117,9 @@
                   "/api/servicos/{id}":  {
                                              "get":  {
                                                          "tags":  [
-                                                                      "ServiÃ§os (catÃ¡logo)"
+                                                                      "Serviços (catálogo)"
                                                                   ],
-                                                         "summary":  "Busca um serviÃ§o pelo id",
+                                                         "summary":  "Busca um serviço pelo id",
                                                          "operationId":  "buscar_1",
                                                          "parameters":  [
                                                                             {
@@ -147,9 +147,9 @@
                                                      },
                                              "put":  {
                                                          "tags":  [
-                                                                      "ServiÃ§os (catÃ¡logo)"
+                                                                      "Serviços (catálogo)"
                                                                   ],
-                                                         "summary":  "Atualiza um serviÃ§o (OS jÃ¡ abertas mantÃªm o preÃ§o da Ã©poca)",
+                                                         "summary":  "Atualiza um serviço (OS já abertas mantêm o preço da época)",
                                                          "operationId":  "atualizar_1",
                                                          "parameters":  [
                                                                             {
@@ -187,9 +187,9 @@
                                                      },
                                              "delete":  {
                                                             "tags":  [
-                                                                         "ServiÃ§os (catÃ¡logo)"
+                                                                         "Serviços (catálogo)"
                                                                      ],
-                                                            "summary":  "Desativa o serviÃ§o",
+                                                            "summary":  "Desativa o serviço",
                                                             "operationId":  "desativar_1",
                                                             "parameters":  [
                                                                                {
@@ -212,9 +212,9 @@
                   "/api/pecas/{id}":  {
                                           "get":  {
                                                       "tags":  [
-                                                                   "PeÃ§as (catÃ¡logo)"
+                                                                   "Peças (catálogo)"
                                                                ],
-                                                      "summary":  "Busca uma peÃ§a pelo id",
+                                                      "summary":  "Busca uma peça pelo id",
                                                       "operationId":  "buscar_2",
                                                       "parameters":  [
                                                                          {
@@ -242,9 +242,9 @@
                                                   },
                                           "put":  {
                                                       "tags":  [
-                                                                   "PeÃ§as (catÃ¡logo)"
+                                                                   "Peças (catálogo)"
                                                                ],
-                                                      "summary":  "Atualiza nome, descriÃ§Ã£o e preÃ§o (o cÃ³digo nÃ£o muda)",
+                                                      "summary":  "Atualiza nome, descrição e preço (o código não muda)",
                                                       "operationId":  "atualizar_2",
                                                       "parameters":  [
                                                                          {
@@ -282,9 +282,9 @@
                                                   },
                                           "delete":  {
                                                          "tags":  [
-                                                                      "PeÃ§as (catÃ¡logo)"
+                                                                      "Peças (catálogo)"
                                                                   ],
-                                                         "summary":  "Desativa a peÃ§a",
+                                                         "summary":  "Desativa a peça",
                                                          "operationId":  "desativar_2",
                                                          "parameters":  [
                                                                             {
@@ -309,7 +309,7 @@
                                                          "tags":  [
                                                                       "Clientes"
                                                                   ],
-                                                         "summary":  "Busca um cliente pelo id (que Ã© o CPF/CNPJ, com ou sem pontuaÃ§Ã£o)",
+                                                         "summary":  "Busca um cliente pelo id (que é o CPF/CNPJ, com ou sem pontuação)",
                                                          "operationId":  "buscar_3",
                                                          "parameters":  [
                                                                             {
@@ -338,7 +338,7 @@
                                                          "tags":  [
                                                                       "Clientes"
                                                                   ],
-                                                         "summary":  "Atualiza os dados de contato do cliente (o documento nÃ£o muda)",
+                                                         "summary":  "Atualiza os dados de contato do cliente (o documento não muda)",
                                                          "operationId":  "atualizar_3",
                                                          "parameters":  [
                                                                             {
@@ -377,7 +377,7 @@
                                                             "tags":  [
                                                                          "Clientes"
                                                                      ],
-                                                            "summary":  "Desativa o cliente (o histÃ³rico Ã© preservado)",
+                                                            "summary":  "Desativa o cliente (o histórico é preservado)",
                                                             "operationId":  "desativar_3",
                                                             "parameters":  [
                                                                                {
@@ -399,9 +399,9 @@
                   "/api/veiculos":  {
                                         "get":  {
                                                     "tags":  [
-                                                                 "VeÃ­culos"
+                                                                 "Veículos"
                                                              ],
-                                                    "summary":  "Lista os veÃ­culos ativos, ou os de um cliente se clienteId for informado",
+                                                    "summary":  "Lista os veículos ativos, ou os de um cliente se clienteId for informado",
                                                     "operationId":  "listar",
                                                     "parameters":  [
                                                                        {
@@ -431,9 +431,9 @@
                                                 },
                                         "post":  {
                                                      "tags":  [
-                                                                  "VeÃ­culos"
+                                                                  "Veículos"
                                                               ],
-                                                     "summary":  "Cadastra um veÃ­culo de um cliente (placa antiga ou Mercosul)",
+                                                     "summary":  "Cadastra um veículo de um cliente (placa antiga ou Mercosul)",
                                                      "operationId":  "cadastrar",
                                                      "requestBody":  {
                                                                          "content":  {
@@ -462,9 +462,9 @@
                   "/api/servicos":  {
                                         "get":  {
                                                     "tags":  [
-                                                                 "ServiÃ§os (catÃ¡logo)"
+                                                                 "Serviços (catálogo)"
                                                              ],
-                                                    "summary":  "Lista os serviÃ§os ativos",
+                                                    "summary":  "Lista os serviços ativos",
                                                     "operationId":  "listar_1",
                                                     "responses":  {
                                                                       "200":  {
@@ -484,9 +484,9 @@
                                                 },
                                         "post":  {
                                                      "tags":  [
-                                                                  "ServiÃ§os (catÃ¡logo)"
+                                                                  "Serviços (catálogo)"
                                                               ],
-                                                     "summary":  "Cadastra um serviÃ§o no catÃ¡logo (nome e preÃ§o)",
+                                                     "summary":  "Cadastra um serviço no catálogo (nome e preço)",
                                                      "operationId":  "cadastrar_1",
                                                      "requestBody":  {
                                                                          "content":  {
@@ -515,9 +515,9 @@
                   "/api/pecas":  {
                                      "get":  {
                                                  "tags":  [
-                                                              "PeÃ§as (catÃ¡logo)"
+                                                              "Peças (catálogo)"
                                                           ],
-                                                 "summary":  "Lista as peÃ§as ativas",
+                                                 "summary":  "Lista as peças ativas",
                                                  "operationId":  "listar_2",
                                                  "responses":  {
                                                                    "200":  {
@@ -537,9 +537,9 @@
                                              },
                                      "post":  {
                                                   "tags":  [
-                                                               "PeÃ§as (catÃ¡logo)"
+                                                               "Peças (catálogo)"
                                                            ],
-                                                  "summary":  "Cadastra uma peÃ§a no catÃ¡logo (cÃ³digo Ãºnico e preÃ§o; a quantidade em estoque fica no Execution Service)",
+                                                  "summary":  "Cadastra uma peça no catálogo (código único e preço; a quantidade em estoque fica no Execution Service)",
                                                   "operationId":  "cadastrar_2",
                                                   "requestBody":  {
                                                                       "content":  {
@@ -568,9 +568,9 @@
                   "/api/ordens-servico":  {
                                               "get":  {
                                                           "tags":  [
-                                                                       "Ordens de ServiÃ§o"
+                                                                       "Ordens de Serviço"
                                                                    ],
-                                                          "summary":  "Lista as OS em andamento (mais prioritÃ¡rias e antigas primeiro) ou filtra por status",
+                                                          "summary":  "Lista as OS em andamento (mais prioritárias e antigas primeiro) ou filtra por status",
                                                           "operationId":  "listar_3",
                                                           "parameters":  [
                                                                              {
@@ -609,9 +609,9 @@
                                                       },
                                               "post":  {
                                                            "tags":  [
-                                                                        "Ordens de ServiÃ§o"
+                                                                        "Ordens de Serviço"
                                                                     ],
-                                                           "summary":  "Abre uma OS para um cliente (CPF/CNPJ) e um veÃ­culo (placa), com serviÃ§os e peÃ§as opcionais",
+                                                           "summary":  "Abre uma OS para um cliente (CPF/CNPJ) e um veículo (placa), com serviços e peças opcionais",
                                                            "operationId":  "abrir",
                                                            "requestBody":  {
                                                                                "content":  {
@@ -640,9 +640,9 @@
                   "/api/ordens-servico/{id}/servicos":  {
                                                             "post":  {
                                                                          "tags":  [
-                                                                                      "Ordens de ServiÃ§o"
+                                                                                      "Ordens de Serviço"
                                                                                   ],
-                                                                         "summary":  "Adiciona um serviÃ§o do catÃ¡logo Ã  OS (antes do orÃ§amento)",
+                                                                         "summary":  "Adiciona um serviço do catálogo à OS (antes do orçamento)",
                                                                          "operationId":  "adicionarServico",
                                                                          "parameters":  [
                                                                                             {
@@ -682,9 +682,9 @@
                   "/api/ordens-servico/{id}/pecas":  {
                                                          "post":  {
                                                                       "tags":  [
-                                                                                   "Ordens de ServiÃ§o"
+                                                                                   "Ordens de Serviço"
                                                                                ],
-                                                                      "summary":  "Adiciona uma peÃ§a do catÃ¡logo Ã  OS (antes do orÃ§amento)",
+                                                                      "summary":  "Adiciona uma peça do catálogo à OS (antes do orçamento)",
                                                                       "operationId":  "adicionarPeca",
                                                                       "parameters":  [
                                                                                          {
@@ -724,9 +724,9 @@
                   "/api/ordens-servico/{id}/orcamento":  {
                                                              "post":  {
                                                                           "tags":  [
-                                                                                       "Ordens de ServiÃ§o"
+                                                                                       "Ordens de Serviço"
                                                                                    ],
-                                                                          "summary":  "Pede o orÃ§amento ao Billing (assÃ­ncrono: o status muda quando o Billing responde)",
+                                                                          "summary":  "Pede o orçamento ao Billing (assíncrono: o status muda quando o Billing responde)",
                                                                           "operationId":  "solicitarOrcamento",
                                                                           "parameters":  [
                                                                                              {
@@ -756,9 +756,9 @@
                   "/api/ordens-servico/{id}/orcamento/recusa":  {
                                                                     "post":  {
                                                                                  "tags":  [
-                                                                                              "Ordens de ServiÃ§o"
+                                                                                              "Ordens de Serviço"
                                                                                           ],
-                                                                                 "summary":  "Cliente recusa o orÃ§amento: a OS volta ao diagnÃ³stico e o orÃ§amento Ã© cancelado",
+                                                                                 "summary":  "Cliente recusa o orçamento: a OS volta ao diagnóstico e o orçamento é cancelado",
                                                                                  "operationId":  "recusarOrcamento",
                                                                                  "parameters":  [
                                                                                                     {
@@ -797,9 +797,9 @@
                   "/api/ordens-servico/{id}/orcamento/aprovacao":  {
                                                                        "post":  {
                                                                                     "tags":  [
-                                                                                                 "Ordens de ServiÃ§o"
+                                                                                                 "Ordens de Serviço"
                                                                                              ],
-                                                                                    "summary":  "Cliente aprova o orÃ§amento: dispara a Saga (pagamento e reserva de estoque)",
+                                                                                    "summary":  "Cliente aprova o orçamento: dispara a Saga (pagamento e reserva de estoque)",
                                                                                     "description":  "Corpo opcional com metodoPagamento. No provedor simulado: APRO aprova, FUND/OTHE recusam, ERRO simula provedor fora do ar. Acompanhe o andamento em GET /{id}/saga.",
                                                                                     "operationId":  "aprovarOrcamento",
                                                                                     "parameters":  [
@@ -839,9 +839,9 @@
                   "/api/ordens-servico/{id}/entrega":  {
                                                            "post":  {
                                                                         "tags":  [
-                                                                                     "Ordens de ServiÃ§o"
+                                                                                     "Ordens de Serviço"
                                                                                  ],
-                                                                        "summary":  "Registra a entrega do veÃ­culo (FINALIZADA â ENTREGUE)",
+                                                                        "summary":  "Registra a entrega do veículo (FINALIZADA → ENTREGUE)",
                                                                         "operationId":  "entregar",
                                                                         "parameters":  [
                                                                                            {
@@ -871,9 +871,9 @@
                   "/api/ordens-servico/{id}/diagnostico":  {
                                                                "post":  {
                                                                             "tags":  [
-                                                                                         "Ordens de ServiÃ§o"
+                                                                                         "Ordens de Serviço"
                                                                                      ],
-                                                                            "summary":  "Inicia o diagnÃ³stico (RECEBIDA â EM_DIAGNOSTICO)",
+                                                                            "summary":  "Inicia o diagnóstico (RECEBIDA → EM_DIAGNOSTICO)",
                                                                             "operationId":  "iniciarDiagnostico",
                                                                             "parameters":  [
                                                                                                {
@@ -903,9 +903,9 @@
                   "/api/ordens-servico/{id}/cancelamento":  {
                                                                 "post":  {
                                                                              "tags":  [
-                                                                                          "Ordens de ServiÃ§o"
+                                                                                          "Ordens de Serviço"
                                                                                       ],
-                                                                             "summary":  "Cancela a OS (sÃ³ com a OS Recebida ou Em DiagnÃ³stico)",
+                                                                             "summary":  "Cancela a OS (só com a OS Recebida ou Em Diagnóstico)",
                                                                              "operationId":  "cancelar",
                                                                              "parameters":  [
                                                                                                 {
@@ -968,7 +968,7 @@
                                                      "tags":  [
                                                                   "Clientes"
                                                               ],
-                                                     "summary":  "Cadastra um cliente (CPF ou CNPJ, com ou sem pontuaÃ§Ã£o)",
+                                                     "summary":  "Cadastra um cliente (CPF ou CNPJ, com ou sem pontuação)",
                                                      "operationId":  "cadastrar_3",
                                                      "requestBody":  {
                                                                          "content":  {
@@ -999,7 +999,7 @@
                                                                      "tags":  [
                                                                                   "Clientes"
                                                                               ],
-                                                                     "summary":  "Reativa um cliente desativado (o id Ã© o CPF/CNPJ)",
+                                                                     "summary":  "Reativa um cliente desativado (o id é o CPF/CNPJ)",
                                                                      "operationId":  "reativar",
                                                                      "parameters":  [
                                                                                         {
@@ -1028,7 +1028,7 @@
                   "/api/auth/login":  {
                                           "post":  {
                                                        "tags":  [
-                                                                    "AutenticaÃ§Ã£o"
+                                                                    "Autenticação"
                                                                 ],
                                                        "summary":  "Autentica o administrador e devolve um token JWT (Bearer)",
                                                        "operationId":  "login",
@@ -1062,9 +1062,9 @@
                   "/api/veiculos/placa/{placa}":  {
                                                       "get":  {
                                                                   "tags":  [
-                                                                               "VeÃ­culos"
+                                                                               "Veículos"
                                                                            ],
-                                                                  "summary":  "Busca um veÃ­culo pela placa",
+                                                                  "summary":  "Busca um veículo pela placa",
                                                                   "operationId":  "buscarPorPlaca",
                                                                   "parameters":  [
                                                                                      {
@@ -1095,8 +1095,8 @@
                                                  "tags":  [
                                                               "Sagas (acompanhamento)"
                                                           ],
-                                                 "summary":  "Ãltimas Sagas de todas as OS (mexidas hÃ¡ menos tempo primeiro)",
-                                                 "description":  "limite padrÃ£o 30, mÃ¡ximo 100. Cada item traz o estado, o link de pagamento e o diÃ¡rio.",
+                                                 "summary":  "Últimas Sagas de todas as OS (mexidas há menos tempo primeiro)",
+                                                 "description":  "limite padrão 30, máximo 100. Cada item traz o estado, o link de pagamento e o diário.",
                                                  "operationId":  "recentes",
                                                  "parameters":  [
                                                                     {
@@ -1130,9 +1130,9 @@
                   "/api/pecas/codigo/{codigo}":  {
                                                      "get":  {
                                                                  "tags":  [
-                                                                              "PeÃ§as (catÃ¡logo)"
+                                                                              "Peças (catálogo)"
                                                                           ],
-                                                                 "summary":  "Busca uma peÃ§a pelo cÃ³digo",
+                                                                 "summary":  "Busca uma peça pelo código",
                                                                  "operationId":  "buscarPorCodigo",
                                                                  "parameters":  [
                                                                                     {
@@ -1161,7 +1161,7 @@
                   "/api/ordens-servico/{id}":  {
                                                    "get":  {
                                                                "tags":  [
-                                                                            "Ordens de ServiÃ§o"
+                                                                            "Ordens de Serviço"
                                                                         ],
                                                                "summary":  "Busca uma OS completa pelo id",
                                                                "operationId":  "buscar_4",
@@ -1193,9 +1193,9 @@
                   "/api/ordens-servico/{id}/status":  {
                                                           "get":  {
                                                                       "tags":  [
-                                                                                   "Ordens de ServiÃ§o"
+                                                                                   "Ordens de Serviço"
                                                                                ],
-                                                                      "summary":  "Consulta sÃ³ o status da OS",
+                                                                      "summary":  "Consulta só o status da OS",
                                                                       "operationId":  "status",
                                                                       "parameters":  [
                                                                                          {
@@ -1225,9 +1225,9 @@
                   "/api/ordens-servico/{id}/saga":  {
                                                         "get":  {
                                                                     "tags":  [
-                                                                                 "Ordens de ServiÃ§o"
+                                                                                 "Ordens de Serviço"
                                                                              ],
-                                                                    "summary":  "DiÃ¡rio da Saga da OS (comandos, eventos e compensaÃ§Ãµes), a mais recente primeiro",
+                                                                    "summary":  "Diário da Saga da OS (comandos, eventos e compensações), a mais recente primeiro",
                                                                     "operationId":  "saga",
                                                                     "parameters":  [
                                                                                        {
@@ -1260,9 +1260,9 @@
                   "/api/ordens-servico/{id}/historico":  {
                                                              "get":  {
                                                                          "tags":  [
-                                                                                      "Ordens de ServiÃ§o"
+                                                                                      "Ordens de Serviço"
                                                                                   ],
-                                                                         "summary":  "HistÃ³rico de mudanÃ§as de status da OS",
+                                                                         "summary":  "Histórico de mudanças de status da OS",
                                                                          "operationId":  "historico",
                                                                          "parameters":  [
                                                                                             {
@@ -1295,9 +1295,9 @@
                   "/api/minhas-ordens":  {
                                              "get":  {
                                                          "tags":  [
-                                                                      "Ãrea do cliente"
+                                                                      "Área do cliente"
                                                                   ],
-                                                         "summary":  "Ordens de serviÃ§o do cliente autenticado por CPF (acompanhamento do status)",
+                                                         "summary":  "Ordens de serviço do cliente autenticado por CPF (acompanhamento do status)",
                                                          "operationId":  "minhasOrdens",
                                                          "responses":  {
                                                                            "200":  {
