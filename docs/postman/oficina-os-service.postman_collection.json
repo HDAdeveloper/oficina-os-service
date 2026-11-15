@@ -1,6 +1,6 @@
 {
   "info": {
-    "name": "OS Service — Oficina",
+    "name": "OS Service — Oficina Tech Service",
     "description": "Rode na ordem. O login guarda o token; os cadastros guardam os ids. Suba o serviço antes (veja docs/PROGRESS.md, Etapa 2d).",
     "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
   },
