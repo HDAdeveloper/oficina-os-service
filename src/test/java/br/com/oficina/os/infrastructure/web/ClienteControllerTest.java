@@ -83,7 +83,7 @@ class ClienteControllerTest {
         when(clientes.cadastrar(any())).thenThrow(new ConflitoException("Já existe cliente"));
 
         mvc.perform(post("/api/clientes").with(jwt().authorities(new SimpleGrantedAuthority("ROLE_ADMIN"))).contentType(APPLICATION_JSON)
-                        .content("{\"nome\":\"Ana\",\"documento\":\"52998224725\"}"))
+                        .content("{\"nome\":\"Ana\",\"documento\":\"52998224725\",\"email\":\"ana@x.com\"}"))
                 .andExpect(status().isConflict())
                 .andExpect(jsonPath("$.title").value("Conflito"));
     }

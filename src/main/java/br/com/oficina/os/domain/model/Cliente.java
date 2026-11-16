@@ -25,8 +25,17 @@ public record Cliente(Documento documento, String nome, String email,
         }
     }
 
+    /** Cadastro novo: o e-mail é obrigatório, porque é por ele que o cliente recebe o link de pagamento. */
     public static Cliente novo(String nome, String documento, String email, String telefone, String endereco) {
-        return new Cliente(Documento.of(documento), nome, email, telefone, endereco, true);
+        Cliente cliente = new Cliente(Documento.of(documento), nome, email, telefone, endereco, true);
+        exigirEmail(email);
+        return cliente;
+    }
+
+    private static void exigirEmail(String email) {
+        if (email == null || email.isBlank()) {
+            throw new RegraDeNegocioException("E-mail do cliente é obrigatório (o link de pagamento é enviado por ele)");
+        }
     }
 
     /** Identificador do cliente: o CPF/CNPJ só com dígitos. */
@@ -43,6 +52,7 @@ public record Cliente(Documento documento, String nome, String email,
     }
 
     public Cliente atualizar(String novoNome, String novoEmail, String novoTelefone, String novoEndereco) {
+        exigirEmail(novoEmail);
         return new Cliente(documento, novoNome, novoEmail, novoTelefone, novoEndereco, ativo);
     }
 }

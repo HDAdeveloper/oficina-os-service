@@ -83,7 +83,7 @@ class RepositoriosPersistenciaTest extends PostgresTestBase {
 
     @Test
     void documentoEhAChaveEntaoSalvarOMesmoDocumentoAtualiza() {
-        clientes.salvar(Cliente.novo("Ana Atualizada", "52998224725", null, null, null));
+        clientes.salvar(Cliente.novo("Ana Atualizada", "52998224725", "ana@exemplo.com", null, null));
 
         assertThat(clientes.buscarPorId("52998224725").orElseThrow().nome()).isEqualTo("Ana Atualizada");
         assertThat(clientes.listarAtivos()).extracting(Cliente::id).containsOnlyOnce("52998224725");

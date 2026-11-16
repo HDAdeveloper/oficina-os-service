@@ -153,7 +153,7 @@ class OrdemServicoServiceTest {
     @Test
     void naoAbreOsComVeiculoDeOutroCliente() {
         Cliente outro = new ClienteService(clientesRepo)
-                .cadastrar(new NovoCliente("Bruno", "111.444.777-35", null, null, null));
+                .cadastrar(new NovoCliente("Bruno", "111.444.777-35", "bruno@x.com", null, null));
         assertThatThrownBy(() -> service.abrir(new AberturaOS(outro.documento().numero(), PLACA, "x", null, null, null)))
                 .isInstanceOf(RegraDeNegocioException.class)
                 .hasMessageContaining("não pertence");

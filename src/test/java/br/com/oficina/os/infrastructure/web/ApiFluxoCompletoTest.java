@@ -117,10 +117,10 @@ class ApiFluxoCompletoTest extends PostgresTestBase {
                 .andExpect(status().isOk());
 
         // Regras: duplicidade e inexistente
-        chamar(post("/api/clientes"), t, "{\"nome\":\"Outra\",\"documento\":\"11144477735\"}")
+        chamar(post("/api/clientes"), t, "{\"nome\":\"Outra\",\"documento\":\"11144477735\",\"email\":\"outra@x.com\"}")
                 .andExpect(status().isConflict());
         chamar(get("/api/clientes/999999"), t, null).andExpect(status().isNotFound());
-        chamar(post("/api/clientes"), t, "{\"nome\":\"Invalido\",\"documento\":\"123\"}")
+        chamar(post("/api/clientes"), t, "{\"nome\":\"Invalido\",\"documento\":\"123\",\"email\":\"inv@x.com\"}")
                 .andExpect(status().isUnprocessableEntity());
 
         // Ordem de serviço
@@ -171,7 +171,7 @@ class ApiFluxoCompletoTest extends PostgresTestBase {
 
         // Cliente desativado volta com a reativação (e o cadastro do mesmo CPF orienta a usá-la)
         chamar(post("/api/clientes"), t,
-                "{\"nome\":\"Fernanda Lima\",\"documento\":\"111.444.777-35\"}")
+                "{\"nome\":\"Fernanda Lima\",\"documento\":\"111.444.777-35\",\"email\":\"fe@x.com\"}")
                 .andExpect(status().isConflict()).andExpect(content().string(containsString("reativa")));
         chamar(post("/api/clientes/" + clienteId + "/reativacao"), t, null).andExpect(status().isOk())
                 .andExpect(jsonPath("$.ativo").value(true));
