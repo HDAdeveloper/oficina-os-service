@@ -35,7 +35,8 @@ public class TokenService {
         // Comparação em tempo constante, para não vazar por tempo de resposta se o usuário/senha acertou
         boolean usuarioOk = iguais(props.adminUsuario(), usuario);
         boolean senhaOk = iguais(props.adminSenha(), senha);
-        if (!(usuarioOk & senhaOk)) {
+        // '&' (e não '&&') de propósito: avalia os dois lados sempre, para o tempo de resposta não revelar qual errou
+        if (!(usuarioOk & senhaOk)) { // NOSONAR java:S2178
             throw new CredenciaisInvalidasException();
         }
         Instant agora = Instant.now(relogio);
