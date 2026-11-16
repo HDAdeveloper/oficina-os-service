@@ -19,6 +19,7 @@ import java.util.List;
 import java.util.concurrent.atomic.AtomicLong;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatCode;
 
 @SpringBootTest
 class OutboxRelayTest extends PostgresTestBase {
@@ -126,6 +127,6 @@ class OutboxRelayTest extends PostgresTestBase {
         var fake = new PublicadorFake();
         fake.falhar = true;
 
-        relay(fake).executar();
+        assertThatCode(() -> relay(fake).executar()).doesNotThrowAnyException();
     }
 }
