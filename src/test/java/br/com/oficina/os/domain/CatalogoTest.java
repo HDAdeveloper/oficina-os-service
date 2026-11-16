@@ -38,8 +38,18 @@ class CatalogoTest {
     }
 
     @Test
-    void clienteAceitaEmailEmBranco() {
-        assertThat(Cliente.novo("Ana", "52998224725", " ", null, null).ativo()).isTrue();
+    void clienteNovoExigeEmail() {
+        assertThatThrownBy(() -> Cliente.novo("Ana", "52998224725", " ", null, null))
+                .isInstanceOf(RegraDeNegocioException.class).hasMessageContaining("E-mail do cliente é obrigatório");
+        assertThatThrownBy(() -> Cliente.novo("Ana", "52998224725", null, null, null))
+                .isInstanceOf(RegraDeNegocioException.class).hasMessageContaining("obrigatório");
+    }
+
+    @Test
+    void atualizacaoNaoPodeApagarOEmail() {
+        Cliente c = Cliente.novo("Ana", "52998224725", "ana@exemplo.com", null, null);
+        assertThatThrownBy(() -> c.atualizar("Ana", "", null, null))
+                .isInstanceOf(RegraDeNegocioException.class).hasMessageContaining("obrigatório");
     }
 
     @Test

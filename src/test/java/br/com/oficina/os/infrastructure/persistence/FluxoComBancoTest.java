@@ -68,15 +68,15 @@ class FluxoComBancoTest extends PostgresTestBase {
 
     @Test
     void erroDeNegocioDesfazATransacao() {
-        clientes.cadastrar(new NovoCliente("Dora", "123.456.789-09", null, null, null));
-        assertThatThrownBy(() -> clientes.cadastrar(new NovoCliente("Dora 2", "12345678909", null, null, null)))
+        clientes.cadastrar(new NovoCliente("Dora", "123.456.789-09", "dora@x.com", null, null));
+        assertThatThrownBy(() -> clientes.cadastrar(new NovoCliente("Dora 2", "12345678909", "dora2@x.com", null, null)))
                 .isInstanceOf(ConflitoException.class);
         assertThat(clientes.listar()).filteredOn(c -> c.documento().numero().equals("12345678909")).hasSize(1);
     }
 
     @Test
     void bloqueioOtimistaImpedeSobrescreverOsAlteradaPorOutro() {
-        Cliente c = clientes.cadastrar(new NovoCliente("Eva", "987.654.321-00", null, null, null));
+        Cliente c = clientes.cadastrar(new NovoCliente("Eva", "987.654.321-00", "eva@x.com", null, null));
         veiculos.cadastrar(new NovoVeiculo("LCK1A23", "VW", "Polo", 2023, c.id()));
         OrdemServico os = ordens.abrir(new AberturaOS("98765432100", "LCK1A23", "Teste", null, null, null));
 

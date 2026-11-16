@@ -1500,6 +1500,7 @@
                                                         },
                                        "ClienteAtualizacaoRequest":  {
                                                                          "required":  [
+                                                                                          "email",
                                                                                           "nome"
                                                                                       ],
                                                                          "type":  "object",
@@ -1814,6 +1815,7 @@
                                        "ClienteRequest":  {
                                                               "required":  [
                                                                                "documento",
+                                                                               "email",
                                                                                "nome"
                                                                            ],
                                                               "type":  "object",

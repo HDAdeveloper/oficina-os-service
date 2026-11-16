@@ -49,7 +49,7 @@ class SagaComBancoTest extends PostgresTestBase {
     /** OS em diagnóstico com 1 serviço (150,00) e 2 peças (35,00 cada) = 220,00. */
     private Long osEmDiagnostico() {
         int n = SEQ.incrementAndGet();
-        var cliente = clientes.cadastrar(new NovoCliente("Cliente " + n, CpfDeTeste.gerar(n), null, null, null));
+        var cliente = clientes.cadastrar(new NovoCliente("Cliente " + n, CpfDeTeste.gerar(n), "cliente" + n + "@exemplo.com", null, null));
         veiculos.cadastrar(new NovoVeiculo(placa(n), "VW", "Gol", 2020, cliente.id()));
         var servico = servicos.cadastrar(new NovoServico("Alinhamento " + n, null, new BigDecimal("150.00"), 30));
         var peca = pecas.cadastrar(new NovaPeca("SAG-" + n, "Filtro " + n, null, new BigDecimal("35.00")));

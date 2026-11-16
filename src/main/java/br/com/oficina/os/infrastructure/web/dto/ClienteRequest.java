@@ -7,7 +7,7 @@ import jakarta.validation.constraints.Size;
 public record ClienteRequest(
         @NotBlank @Size(max = 150) String nome,
         @NotBlank @Size(max = 18) String documento,
-        @Email @Size(max = 150) String email,
+        @NotBlank @Email @Size(max = 150) String email,
         @Size(max = 30) String telefone,
         @Size(max = 255) String endereco) {
 }
